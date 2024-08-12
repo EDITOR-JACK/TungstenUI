@@ -5,7 +5,6 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
     if (event == EV_enter_state) {
-        rgb_led_update(0x22, 0); //AUX LED Orange High
         set_level(0);
         ticks_since_on = 0;
         // sleep while off (unless delay requested)
@@ -23,6 +22,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     else if (event == EV_sleep_tick) {
         if (ticks_since_on < 255) ticks_since_on ++;
+        rgb_led_update(0x21, arg); //AUX LED Orange High
         // lock the light after being off for N minutes
             uint16_t ticks = cfg.autolock_time * SLEEP_TICKS_PER_MINUTE;
             if ((cfg.autolock_time > 0)  && (arg > ticks)) {
