@@ -5,7 +5,9 @@
 #include "anduril/config-default.h"
 
 /********* specific settings for known driver types *********/
+
 #include incfile(CFG_H)
+
 #ifdef HWDEF_H
 #include incfile(HWDEF_H)
 #endif
@@ -27,6 +29,9 @@
 #include "anduril/lockout-mode-fsm.h"
 #endif
 
+// enable FSM features needed by strobe modes
+#include "anduril/strobe-modes-fsm.h"
+
 // figure out how many bytes of eeprom are needed,
 // based on which UI features are enabled
 // (include this one last)
@@ -35,6 +40,7 @@
 
 /********* bring in FSM / SpaghettiMonster *********/
 #define USE_IDLE_MODE  // reduce power use while awake and no tasks are pending
+
 #include "fsm/spaghetti-monster.h"
 
 /********* does this build target have special code to include? *********/
@@ -49,14 +55,26 @@
 
 /********* Include all the regular app headers *********/
 
-#include "anduril/off-mode.h"
+#include "tungsten/off-mode.h"
 #include "anduril/ramp-mode.h"
 #include "anduril/config-mode.h"
 #include "anduril/aux-leds.h"
 #include "anduril/misc.h"
 
+#ifdef USE_SUNSET_TIMER
+#include "anduril/sunset-timer.h"
+#endif
+
+#ifdef USE_VERSION_CHECK
+#include "anduril/version-check-mode.h"
+#endif
+
 #ifdef USE_BATTCHECK_MODE
 #include "anduril/battcheck-mode.h"
+#endif
+
+#ifdef USE_BEACON_MODE
+#include "anduril/beacon-mode.h"
 #endif
 
 #ifdef USE_THERMAL_REGULATION
@@ -64,7 +82,15 @@
 #endif
 
 #ifdef USE_LOCKOUT_MODE
-#include "anduril/lockout-mode.h"
+#include "tungsten/lockout-mode.h"
+#endif
+
+#if (defined(USE_MOMENTARY_MODE) || defined(USE_TACTICAL_MODE))
+#include "anduril/momentary-mode.h"
+#endif
+
+#ifdef USE_TACTICAL_MODE
+#include "anduril/tactical-mode.h"
 #endif
 
 // allow the channel mode handler even when only 1 mode
@@ -75,6 +101,13 @@
 
 #ifdef USE_FACTORY_RESET
 #include "anduril/factory-reset.h"
+#endif
+
+// this one detects its own enable/disable settings
+#include "anduril/strobe-modes.h"
+
+#ifdef USE_SOS_MODE
+#include "anduril/sos-mode.h"
 #endif
 
 #ifdef USE_SMOOTH_STEPS
@@ -96,8 +129,20 @@
 #include "anduril/aux-leds.c"
 #include "anduril/misc.c"
 
+#ifdef USE_SUNSET_TIMER
+#include "anduril/sunset-timer.c"
+#endif
+
+#ifdef USE_VERSION_CHECK
+#include "anduril/version-check-mode.c"
+#endif
+
 #ifdef USE_BATTCHECK_MODE
 #include "anduril/battcheck-mode.c"
+#endif
+
+#ifdef USE_BEACON_MODE
+#include "anduril/beacon-mode.c"
 #endif
 
 #ifdef USE_THERMAL_REGULATION
@@ -108,12 +153,28 @@
 #include "anduril/lockout-mode.c"
 #endif
 
+#if (defined(USE_MOMENTARY_MODE) || defined(USE_TACTICAL_MODE))
+#include "anduril/momentary-mode.c"
+#endif
+
+#ifdef USE_TACTICAL_MODE
+#include "anduril/tactical-mode.c"
+#endif
+
 #if defined(USE_CHANNEL_MODES)
 #include "anduril/channel-modes.c"
 #endif
 
 #ifdef USE_FACTORY_RESET
 #include "anduril/factory-reset.c"
+#endif
+
+#ifdef USE_STROBE_STATE
+#include "anduril/strobe-modes.c"
+#endif
+
+#ifdef USE_SOS_MODE
+#include "anduril/sos-mode.c"
 #endif
 
 #ifdef USE_SMOOTH_STEPS
@@ -137,6 +198,11 @@ void setup() {
         #else
             // blink at power-on to let user know power is connected
             blink_once();
+        #endif
+
+        #ifdef USE_FACTORY_RESET
+        if (button_is_pressed())
+            factory_reset();
         #endif
 
         load_config();
@@ -191,25 +257,61 @@ void loop() {
 
     if (0) {}  // placeholder
 
+    #ifdef USE_VERSION_CHECK
+    else if (state == version_check_state) {
+        version_check_iter();
+    }
+    #endif
+
+    #ifdef USE_STROBE_STATE
+    else if ((state == strobe_state)
+         #if defined(USE_MOMENTARY_MODE) || defined(USE_TACTICAL_MODE)
+         // also handle momentary strobes
+         || ((0
+              #ifdef USE_MOMENTARY_MODE
+              || (state == momentary_state)
+              #endif
+              #ifdef USE_TACTICAL_MODE
+              || (state == tactical_state)
+              #endif
+             )
+             && (momentary_mode == 1) && (momentary_active))
+         #endif
+         ) {
+        strobe_state_iter();
+    }
+    #endif  // #ifdef USE_STROBE_STATE
+
+    #ifdef USE_BORING_STROBE_STATE
+    else if (state == boring_strobe_state) {
+        boring_strobe_state_iter();
+    }
+    #endif
+
     #ifdef USE_BATTCHECK
     else if (state == battcheck_state) {
-        nice_delay_ms(1000);  // wait a moment for a more accurate reading
+        nice_delay_ms(500);  // wait a moment for a more accurate reading
         battcheck();
-        #ifdef USE_SIMPLE_UI
-        // in simple mode, turn off after one readout
-        // FIXME: can eat the next button press
-        //        (state changes in loop() act weird)
-        if (cfg.simple_ui_active) set_state_deferred(off_state, 0);
-        else nice_delay_ms(1000);
-        #endif
+        set_state_deferred(off_state, 0);
     }
     #endif
 
     #ifdef USE_THERMAL_REGULATION
-    // TODO: blink out therm_ceil during thermal_config_state?
     else if (state == tempcheck_state) {
         blink_num(temperature);
         nice_delay_ms(1000);
+    }
+    #endif
+
+    #ifdef USE_BEACON_MODE
+    else if (state == beacon_state) {
+        beacon_mode_iter();
+    }
+    #endif
+
+    #if defined(USE_SOS_MODE) && defined(USE_SOS_MODE_IN_BLINKY_GROUP)
+    else if (state == sos_state) {
+        sos_mode_iter();
     }
     #endif
 
@@ -239,6 +341,13 @@ void low_voltage() {
     // TODO: turn off aux LED(s) when power is really low
 
     if (0) {}  // placeholder
+
+    #ifdef USE_STROBE_STATE
+    // "step down" from strobe to something low
+    else if (state == strobe_state) {
+        set_state(steady_state, RAMP_SIZE/6);
+    }
+    #endif
 
     // in normal mode, step down or turn off
     else if (state == steady_state) {
