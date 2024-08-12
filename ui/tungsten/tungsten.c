@@ -22,7 +22,7 @@
 #endif
 
 #ifdef USE_BATTCHECK_MODE
-#include "tungsten/battcheck-mode-fsm.h"
+#include "anduril/battcheck-mode-fsm.h"
 #endif
 
 #ifdef USE_LOCKOUT_MODE
@@ -138,7 +138,7 @@
 #endif
 
 #ifdef USE_BATTCHECK_MODE
-#include "anduril/battcheck-mode.c"
+#include "tungsten/battcheck-mode.c"
 #endif
 
 #ifdef USE_BEACON_MODE
