@@ -6,6 +6,7 @@
 #ifdef USE_EXTRA_BATTCHECK_DIGIT
     #undef USE_EXTRA_BATTCHECK_DIGIT
 #endif
+#define DEFAULT_AUTOLOCK_TIME 1
 
 /********* specific settings for known driver types *********/
 
@@ -58,10 +59,10 @@
 
 /********* Include all the regular app headers *********/
 
-#include "tungsten/off-mode.h"
+#include "anduril/off-mode.h"
 #include "anduril/ramp-mode.h"
 #include "anduril/config-mode.h"
-#include "tungsten/aux-leds.h"
+#include "anduril/aux-leds.h"
 #include "anduril/misc.h"
 
 #ifdef USE_SUNSET_TIMER
@@ -85,7 +86,7 @@
 #endif
 
 #ifdef USE_LOCKOUT_MODE
-#include "tungsten/lockout-mode.h"
+#include "anduril/lockout-mode.h"
 #endif
 
 #if (defined(USE_MOMENTARY_MODE) || defined(USE_TACTICAL_MODE))
@@ -126,7 +127,7 @@
 //  but it saves a lot of space by letting us use the -fwhole-program flag)
 
 #include "tungsten/off-mode.c"
-#include "anduril/ramp-mode.c"
+#include "tungsten/ramp-mode.c"
 #include "anduril/load-save-config.c"
 #include "anduril/config-mode.c"
 #include "tungsten/aux-leds.c"

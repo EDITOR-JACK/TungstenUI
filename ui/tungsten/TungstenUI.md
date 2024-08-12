@@ -21,7 +21,6 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## TODO
 
-- Thermal calibration?
 - Blink Red AUX when battery low
 - Blink Green AUX when powered on (boot)
 - Info (battery/temp) blinkout to use AUX leds
