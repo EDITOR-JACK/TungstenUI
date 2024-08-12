@@ -1,10 +1,6 @@
 #pragma once
 #include "anduril/battcheck-mode.h"
 
-#ifdef USE_EXTRA_BATTCHECK_DIGIT
-    #undef USE_EXTRA_BATTCHECK_DIGIT
-#endif
-
 uint8_t battcheck_state(Event event, uint16_t arg) {
 
     // 1C: OFF

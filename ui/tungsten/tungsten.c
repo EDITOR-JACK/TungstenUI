@@ -3,6 +3,9 @@
 
 /********* User-configurable options *********/
 #include "anduril/config-default.h"
+#ifdef USE_EXTRA_BATTCHECK_DIGIT
+    #undef USE_EXTRA_BATTCHECK_DIGIT
+#endif
 
 /********* specific settings for known driver types *********/
 
