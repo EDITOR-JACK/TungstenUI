@@ -58,7 +58,7 @@
 #include "tungsten/off-mode.h"
 #include "anduril/ramp-mode.h"
 #include "anduril/config-mode.h"
-#include "anduril/aux-leds.h"
+#include "tungsten/aux-leds.h"
 #include "anduril/misc.h"
 
 #ifdef USE_SUNSET_TIMER
@@ -126,7 +126,7 @@
 #include "anduril/ramp-mode.c"
 #include "anduril/load-save-config.c"
 #include "anduril/config-mode.c"
-#include "anduril/aux-leds.c"
+#include "tungsten/aux-leds.c"
 #include "anduril/misc.c"
 
 #ifdef USE_SUNSET_TIMER
