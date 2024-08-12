@@ -292,7 +292,7 @@ void loop() {
     else if (state == battcheck_state) {
         nice_delay_ms(500);  // wait a moment for a more accurate reading
         battcheck();
-        set_state_deferred(off_state, 0);
+        nice_delay_ms(1000);
     }
     #endif
 
