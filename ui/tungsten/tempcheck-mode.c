@@ -24,17 +24,10 @@ void thermal_config_save(uint8_t step, uint8_t value) {
             cfg.therm_cal_offset = value - rawtemp;
             adc_reset = 2;  // invalidate all recent temperature data
         }
-
-        // item 2: set maximum heat limit
-        else {
-            cfg.therm_ceil = 30 + value - 1;
-        }
     }
-
-    if (cfg.therm_ceil > MAX_THERM_CEIL) cfg.therm_ceil = MAX_THERM_CEIL;
 }
 
 uint8_t thermal_config_state(Event event, uint16_t arg) {
     return config_state_base(event, arg,
-                             2, thermal_config_save);
+                             1, thermal_config_save);
 }
