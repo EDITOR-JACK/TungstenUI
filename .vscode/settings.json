@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "tempcheck-mode.h": "c"
+        "tempcheck-mode.h": "c",
+        "misc.h": "c"
     }
 }

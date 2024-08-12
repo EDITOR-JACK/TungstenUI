@@ -31,8 +31,8 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1 click (before timeout): go to memorized level, but allow abort for double click
-    else if (event == EV_click1_release) {
+    // (1 click initial press): go to memorized level, but allow abort for double click
+    else if (event == EV_click1_press) {
         set_level(memorized_level);
         return EVENT_HANDLED;
     }
