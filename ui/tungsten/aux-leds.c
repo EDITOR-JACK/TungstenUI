@@ -1,5 +1,5 @@
 #pragma once
-#include "tungsten/aux-leds.h"
+#include "anduril/aux-leds.h"
 
 #if defined(USE_INDICATOR_LED)
 void indicator_led_update(uint8_t mode, uint8_t tick) {
