@@ -5,7 +5,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
     if (event == EV_enter_state) {
-        rgb_led_update(0x21, arg); //AUX LED Orange High
+        rgb_led_update(0x22, 0); //AUX LED Orange High
         set_level(0);
         ticks_since_on = 0;
         // sleep while off (unless delay requested)
