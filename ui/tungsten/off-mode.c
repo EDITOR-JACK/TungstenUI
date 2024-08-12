@@ -23,11 +23,11 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     else if (event == EV_sleep_tick) {
         if (ticks_since_on < 255) ticks_since_on ++;
-        // lock the light after being off for 2 minutes
-        uint16_t ticks = 2 * SLEEP_TICKS_PER_MINUTE;
-        if (arg > ticks) {
-            set_state(lockout_state, 0);
-        }
+        // lock the light after being off for N minutes
+            uint16_t ticks = cfg.autolock_time * SLEEP_TICKS_PER_MINUTE;
+            if ((cfg.autolock_time > 0)  && (arg > ticks)) {
+                set_state(lockout_state, 0);
+            }
         return EVENT_HANDLED;
     }
 
