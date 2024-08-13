@@ -1,6 +1,8 @@
 #pragma once
 #include "anduril/ramp-mode.h"
 
+static int8_t overheatIndicator = 0;
+
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     static uint8_t level_before_off = 0;
