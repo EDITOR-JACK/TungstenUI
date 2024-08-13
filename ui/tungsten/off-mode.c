@@ -43,6 +43,12 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+    // 1H: Memorized Level
+    else if (event == EV_click1_hold) {
+        set_state(steady_state, memorized_level);
+        return EVENT_HANDLED;
+    }
+
     // 2C: Max Level
     else if (event == EV_2clicks) {
         set_state(steady_state, MAX_LEVEL);

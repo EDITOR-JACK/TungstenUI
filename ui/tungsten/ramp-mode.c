@@ -16,6 +16,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
         ramp_direction = 1;
         return EVENT_HANDLED;
     }
+    // button released
+    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
+        set_state(off_state, 0);
+        return EVENT_HANDLED;
+    }
     // 1 click (early): off
     else if (event == EV_click1_release) {
         level_before_off = actual_level;
