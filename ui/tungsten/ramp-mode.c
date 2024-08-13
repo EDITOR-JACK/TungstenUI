@@ -22,11 +22,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         channel_mode = cfg.channel_mode;
     #endif
 
-    // make sure ramp globals are correct...
-    // ... but they already are; no need to do it here
-    //ramp_update_config();
-    //nearest_level(1);  // same effect, takes less space
-
     uint8_t mode_min = ramp_floor;
     uint8_t mode_max = ramp_ceil;
     uint8_t step_size;
@@ -602,45 +597,10 @@ uint8_t globals_config_state(Event event, uint16_t arg) {
 }
 #endif
 
-// find the ramp level closest to the target,
-// using only the levels which are allowed in the current state
 uint8_t nearest_level(int16_t target) {
-    // using int16_t here saves us a bunch of logic elsewhere,
-    // by allowing us to correct for numbers < 0 or > 255 in one central place
-
-    // ensure all globals are correct
-    ramp_update_config();
-
-    // bounds check
-    uint8_t mode_min = ramp_floor;
-    uint8_t mode_max = ramp_ceil;
-    uint8_t num_steps = cfg.ramp_stepss[1
-    #ifdef USE_SIMPLE_UI
-        + cfg.simple_ui_active
-    #endif
-        ];
-    // special case for 1-step ramp... use halfway point between floor and ceiling
-    if (cfg.ramp_style && (1 == num_steps)) {
-        uint8_t mid = (mode_max + mode_min) >> 1;
-        return mid;
-    }
-    if (target < mode_min) return mode_min;
-    if (target > mode_max) return mode_max;
-    // the rest isn't relevant for smooth ramping
-    if (! cfg.ramp_style) return target;
-
-    uint8_t ramp_range = mode_max - mode_min;
-    ramp_discrete_step_size = ramp_range / (num_steps-1);
-    uint8_t this_level = mode_min;
-
-    for(uint8_t i=0; i<num_steps; i++) {
-        this_level = mode_min + (i * (uint16_t)ramp_range / (num_steps-1));
-        int16_t diff = target - this_level;
-        if (diff < 0) diff = -diff;
-        if (diff <= (ramp_discrete_step_size>>1))
-            return this_level;
-    }
-    return this_level;
+    if (target < 1) return 1;
+    if (target > 150) return 150;
+    return target;
 }
 
 // ensure ramp globals are correct
@@ -654,26 +614,10 @@ void ramp_update_config() {
     ramp_ceil  = cfg.ramp_ceils[which];
 }
 
-#if defined(USE_THERMAL_REGULATION) || defined(USE_SMOOTH_STEPS)
 void set_level_and_therm_target(uint8_t level) {
-    #ifdef USE_THERMAL_REGULATION
     target_level = level;
-    #endif
-    #ifdef USE_SMOOTH_STEPS
-        // if adjusting by more than 1 ramp level,
-        // animate the step change (if smooth steps enabled)
-        uint8_t diff = (level > actual_level)
-            ? (level - actual_level) : (actual_level - level);
-        if (smooth_steps_in_progress
-            || (cfg.smooth_steps_style && (diff > 1)))
-            set_level_smooth(level, 4);
-        else
-    #endif
     set_level(level);
 }
-#else
-#define set_level_and_therm_target(level) set_level(level)
-#endif
 
 #ifdef USE_MANUAL_MEMORY
 void manual_memory_restore() {
