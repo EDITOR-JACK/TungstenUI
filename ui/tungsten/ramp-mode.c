@@ -102,24 +102,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // un-reverse after 1 second
         if (arg == AUTO_REVERSE_TIME) ramp_direction = 1;
 
-        #ifdef USE_SUNSET_TIMER
-        // reduce output if shutoff timer is active
-        if (sunset_timer) {
-            uint8_t dimmed_level = sunset_timer_orig_level * sunset_timer / sunset_timer_peak;
-            uint8_t dimmed_level_next = sunset_timer_orig_level * (sunset_timer-1) / sunset_timer_peak;
-            uint8_t dimmed_level_delta = dimmed_level - dimmed_level_next;
-            dimmed_level -= dimmed_level_delta * (sunset_ticks/TICKS_PER_SECOND) / 60;
-            if (dimmed_level < 1) dimmed_level = 1;
-
-            #ifdef USE_SET_LEVEL_GRADUALLY
-            set_level_gradually(dimmed_level);
-            target_level = dimmed_level;
-            #else
-            set_level_and_therm_target(dimmed_level);
-            #endif
-        }
-        #endif  // ifdef USE_SUNSET_TIMER
-
         #ifdef USE_SET_LEVEL_GRADUALLY
         int16_t diff = gradual_target - actual_level;
         static uint16_t ticks_since_adjust = 0;
@@ -153,7 +135,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    #ifdef USE_THERMAL_REGULATION
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
         #if 0
@@ -189,7 +170,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         blip();
         #endif
         if (actual_level < target_level) {
-            //int16_t stepup = actual_level + (arg>>1);
             int16_t stepup = actual_level + arg;
             if (stepup > target_level) stepup = target_level;
             else if (stepup < MIN_THERM_STEPDOWN) stepup = MIN_THERM_STEPDOWN;
@@ -213,50 +193,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
     #endif  // ifdef USE_SET_LEVEL_GRADUALLY
-    #endif  // ifdef USE_THERMAL_REGULATION
-
-    ////////// Every action below here is blocked in the simple UI //////////
-    // That is, unless we specifically want to enable 3C for smooth/stepped selection in Simple UI
-    #if defined(USE_SIMPLE_UI) && !defined(USE_SIMPLE_UI_RAMPING_TOGGLE)
-    if (cfg.simple_ui_active) {
-        return EVENT_NOT_HANDLED;
-    }
-    #endif
-
-    // 3 clicks: toggle smooth vs discrete ramping
-    // (and/or 6 clicks when there are multiple channel modes)
-    // (handle 3C here anyway, when all but 1 mode is disabled)
-    else if ((event == EV_3clicks)
-        #if NUM_CHANNEL_MODES > 1
-             || (event == EV_6clicks)
-        ) {
-            // detect if > 1 channel mode is enabled,
-            // and if so, fall through so channel mode code can handle it
-            // otherwise, change the ramp style
-            if (event == EV_3clicks) {
-                uint8_t enabled = 0;
-                for (uint8_t m=0; m<NUM_CHANNEL_MODES; m++)
-                    enabled += channel_mode_enabled(m);
-                if (enabled > 1)
-                    return EVENT_NOT_HANDLED;
-            }
-        #else
-        ) {
-        #endif
-
-        cfg.ramp_style = !cfg.ramp_style;
-        save_config();
-        #ifdef START_AT_MEMORIZED_LEVEL
-        save_config_wl();
-        #endif
-        blip();
-        memorized_level = nearest_level(actual_level);
-        set_level_and_therm_target(memorized_level);
-        #ifdef USE_SUNSET_TIMER
-        reset_sunset_timer();
-        #endif
-        return EVENT_HANDLED;
-    }
 
     return EVENT_NOT_HANDLED;
 }
@@ -271,3 +207,40 @@ void set_level_and_therm_target(uint8_t level) {
     target_level = level;
     set_level(level);
 }
+
+//Looks like these need to be defined here in order for FSM to compile...
+
+#ifdef USE_MANUAL_MEMORY
+void manual_memory_restore() {
+    memorized_level = cfg.manual_memory;
+    #if NUM_CHANNEL_MODES > 1
+        channel_mode = cfg.channel_mode = cfg.manual_memory_channel_mode;
+    #endif
+    #ifdef USE_CHANNEL_MODE_ARGS
+        for (uint8_t i=0; i<NUM_CHANNEL_MODES; i++)
+          cfg.channel_mode_args[i] = cfg.manual_memory_channel_args[i];
+    #endif
+}
+
+void manual_memory_save() {
+    cfg.manual_memory = actual_level;
+    #if NUM_CHANNEL_MODES > 1
+        cfg.manual_memory_channel_mode = channel_mode;
+    #endif
+    #ifdef USE_CHANNEL_MODE_ARGS
+        for (uint8_t i=0; i<NUM_CHANNEL_MODES; i++)
+          cfg.manual_memory_channel_args[i] = cfg.channel_mode_args[i];
+    #endif
+}
+#endif  // ifdef USE_MANUAL_MEMORY
+
+#ifdef USE_SUNSET_TIMER
+void reset_sunset_timer() {
+    if (sunset_timer) {
+        sunset_timer_orig_level = actual_level;
+        sunset_timer_peak = sunset_timer;
+        sunset_ticks = 0;
+    }
+}
+#endif
+
