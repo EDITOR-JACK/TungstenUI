@@ -4,20 +4,20 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## Features
 
-### 3 States (OFF/STANDBY/RAMP)
+### 3 States (LOCKOUT/OFF/ON)
 
-- 1C STANDBY -> Memory level
-- 1H STANDBY -> Ramp from min level
-- 2C STANDBY -> Max level
-(+1 Click from OFF)
-- 2C OFF -> Memory level
-- 2H OFF -> Ramp from min level
-- 3C OFF -> Max level
+LOCKOUT 1H -> Momentary Low
+LOCKOUT 2C -> Set Max Level
+LOCKOUT 2H -> Set New Level
 
-- 1H OFF -> Momentary Min level
-- 3C STANDBY -> OFF
-- 4C STANDBY -> Voltage Readout
-- 2C Voltage Readout -> Temperature Readout
+OFF 1C -> Max (or Set) Level
+OFF 2C -> Max Level (turbo)
+OFF 3C -> Lockout Manually
+OFF 4C -> Battery Voltage Check (2C -> Temp Check)
+
+ON 1C -> OFF
+ON 1H/2H -> Ramp Brightness Up/Down
+ON 2C -> Max Level (turbo)
 
 ## TODO
 
@@ -27,10 +27,6 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 - Breathing AUX leds (PWM)?
 - AUX LED lower voltage??
 - AUX leds come on immediately as main emitter fades off?
-- Smoother fading between modes/levels?
-- Slightly slower ramping speed
-- Beacon mode?
-- Temp sensor calibration
-- Beacon/strobe (using AUX leds?)
-- Momentary/tactical mode
+- Beacon mode (using AUX leds?)
+- Momentary from OFF (use memorized level & temperature regulation)
 - Custom AUX PCB w/ amber leds

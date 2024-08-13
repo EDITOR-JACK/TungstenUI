@@ -4,11 +4,13 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     // momentary moon mode during lockout
     // button held
     if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
-        set_level(1);
+        //set_level(1);
+        rgb_led_update(0x21, 0); //AUX LED on
     }
     // button released
     else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
-        set_level(0);
+        //set_level(0);
+        rgb_led_update(0x00, 0); //AUX LED off
     }
 
     if (event == EV_enter_state) {
