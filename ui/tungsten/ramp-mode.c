@@ -87,16 +87,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
     #endif  // ifdef USE_SUNSET_TIMER
 
     // turn LED on when we first enter the mode
-    if ((event == EV_enter_state) || (event == EV_reenter_state)) {
-        #if defined(USE_MOMENTARY_MODE) && defined(USE_STROBE_STATE)
-        momentary_mode = 0;  // 0 = ramping, 1 = strobes
-        #endif
-        // if we just got back from config mode, go back to memorized level
-        if (event == EV_reenter_state) {
-            arg = memorized_level;
-        }
-        // remember this level, unless it's moon or turbo
-        if ((arg > mode_min) && (arg < mode_max))
+    if (event == EV_enter_state) {
+        // remember this level, unless it's 2C turbo
+        if (arg < 150)
             memorized_level = arg;
         // use the requested level even if not memorized
         arg = nearest_level(arg);
@@ -124,26 +117,14 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
     // 2 clicks: go to/from highest level
     else if (event == EV_2clicks) {
-        if (actual_level < turbo_level) {
-            set_level_and_therm_target(turbo_level);
+        if (actual_level < 150) {
+            set_level_and_therm_target(150);
         }
         else {
             set_level_and_therm_target(memorized_level);
         }
-        #ifdef USE_SUNSET_TIMER
-        reset_sunset_timer();
-        #endif
         return EVENT_HANDLED;
     }
-
-    #ifdef USE_LOCKOUT_MODE
-    // 4 clicks: shortcut to lockout mode
-    else if (event == EV_4clicks) {
-        set_level(0);
-        set_state(lockout_state, 0);
-        return EVENT_HANDLED;
-    }
-    #endif
 
     // hold: change brightness (brighter, dimmer)
     // click, hold: change brightness (dimmer)
@@ -184,19 +165,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
                     ) && (actual_level >= mode_max)) {
             ramp_direction = -1;
         }
-        #ifdef USE_LOCKOUT_MODE
-        // if the button is still stuck, lock the light
-        else if ((arg > TICKS_PER_SECOND * 10
-                    #ifdef USE_RAMP_SPEED_CONFIG
-                    // FIXME: count from time actual_level hits mode_min,
-                    //   not from beginning of button hold
-                    * ramp_speed
-                    #endif
-                    ) && (actual_level <= mode_min)) {
-            blink_once();
-            set_state(lockout_state, 0);
-        }
-        #endif
         memorized_level = nearest_level((int16_t)actual_level \
                           + (step_size * ramp_direction));
         #if defined(BLINK_AT_RAMP_CEIL) || defined(BLINK_AT_RAMP_MIDDLE)

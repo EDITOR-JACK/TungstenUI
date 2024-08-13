@@ -23,15 +23,16 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 2C: Memorized Level
+    // 2C: Max Level
     else if (event == EV_2clicks) {
+        memorized_level = 150;
         set_state(steady_state, memorized_level);
         return EVENT_HANDLED;
     }
 
-    // 3C: Max Level
-    else if (event == EV_3clicks) {
-        set_state(steady_state, 150);
+    // 2H: Set Level
+    else if (event == EV_click2_hold) {
+        set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
 
