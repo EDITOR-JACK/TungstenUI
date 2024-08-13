@@ -31,7 +31,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
 
     // 3C: Max Level
     else if (event == EV_3clicks) {
-        set_state(steady_state, memorized_level);
+        set_state(steady_state, 150);
         return EVENT_HANDLED;
     }
 
