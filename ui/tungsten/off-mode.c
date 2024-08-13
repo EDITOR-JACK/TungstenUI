@@ -23,12 +23,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
 
     else if (event == EV_sleep_tick) {
-        if (ticks_since_on < 255) ticks_since_on ++;
-        if (overheatIndicator) {
-            rgb_led_update(0x20, arg); //AUX LED Red High
-        } else {
-            rgb_led_update(0x21, arg); //AUX LED Orange High
-        }     
+        if (ticks_since_on < 255) ticks_since_on ++;    
         // lock the light after being off for N minutes
             uint16_t ticks = cfg.autolock_time * SLEEP_TICKS_PER_MINUTE;
             if ((cfg.autolock_time > 0)  && (arg > ticks)) {
