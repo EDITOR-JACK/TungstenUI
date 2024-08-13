@@ -1,15 +1,6 @@
 #pragma once
 #include "anduril/ramp-mode.h"
 
-#ifdef USE_SUNSET_TIMER
-#include "anduril/sunset-timer.h"
-#endif
-
-#ifdef USE_SMOOTH_STEPS
-#include "anduril/smooth-steps.h"
-#endif
-
-
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     #if (B_TIMING_OFF == B_RELEASE_T)
