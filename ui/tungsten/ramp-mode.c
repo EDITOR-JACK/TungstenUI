@@ -22,18 +22,18 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 1 click (early): off
     else if (event == EV_click1_release) {
         level_before_off = actual_level;
-        if (overheatIndicator) {
-            rgb_led_set(0x20); //AUX LED Red High
-        } else {
-            rgb_led_set(0x21); //AUX LED Orange High
-        }
         set_level_and_therm_target(0);
+        if (overheatIndicator) {
+            rgb_led_update(0x20,0); //AUX LED Red High
+        } else {
+            rgb_led_update(0x21,0); //AUX LED Orange High
+        } 
         return EVENT_HANDLED;
     }
     // 2 clicks (early): abort turning off
     else if (event == EV_click2_press) {
         set_level_and_therm_target(level_before_off);
-        rgb_led_set(0x00); //AUX LED Off
+        rgb_led_update(0x00,0); //AUX LED Off
     }
     // 1 click: off
     else if (event == EV_1click) {
