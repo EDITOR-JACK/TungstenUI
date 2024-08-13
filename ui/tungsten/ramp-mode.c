@@ -7,6 +7,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
+        overheatIndicator = 0;
         // remember this level, unless it's 2C turbo
         if (arg < 150)
             memorized_level = arg;
@@ -14,11 +15,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         arg = nearest_level(arg);
         set_level_and_therm_target(arg);
         ramp_direction = 1;
-        return EVENT_HANDLED;
-    }
-    // button released
-    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
-        set_state(off_state, 0);
         return EVENT_HANDLED;
     }
     // 1 click (early): off
@@ -123,6 +119,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
+        overheatIndicator = 1;
         #if 0
         blip();
         #endif
