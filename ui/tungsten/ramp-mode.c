@@ -1,6 +1,8 @@
 #pragma once
 #include "anduril/ramp-mode.h"
 
+static int8_t overheatIndicator = 0;
+
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     static uint8_t level_before_off = 0;
@@ -21,9 +23,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if (event == EV_click1_release) {
         level_before_off = actual_level;
         if (overheatIndicator) {
-            rgb_led_update(0x20, arg); //AUX LED Red High
+            rgb_led_update(0x20,0); //AUX LED Red High
         } else {
-            rgb_led_update(0x21, arg); //AUX LED Orange High
+            rgb_led_update(0x21,0); //AUX LED Orange High
         }
         set_level_and_therm_target(0);
         return EVENT_HANDLED;
@@ -31,7 +33,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 2 clicks (early): abort turning off
     else if (event == EV_click2_press) {
         set_level_and_therm_target(level_before_off);
-        rgb_led_update(0x00, arg); //AUX LED Off
+        rgb_led_update(0x00,0); //AUX LED Off
     }
     // 1 click: off
     else if (event == EV_1click) {

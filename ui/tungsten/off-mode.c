@@ -1,8 +1,6 @@
 #pragma once
 #include "anduril/off-mode.h"
 
-static int8_t overheatIndicator = 0;
-
 uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
