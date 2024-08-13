@@ -3,11 +3,7 @@
 
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
-    #if (B_TIMING_OFF == B_RELEASE_T)
-    // if the user double clicks, we need to abort turning off,
-    // and this stores the level to return to
     static uint8_t level_before_off = 0;
-    #endif
 
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
@@ -20,19 +16,17 @@ uint8_t steady_state(Event event, uint16_t arg) {
         ramp_direction = 1;
         return EVENT_HANDLED;
     }
-    #if (B_TIMING_OFF == B_RELEASE_T)
-    // 1 click (early): off, if configured for early response
+    // 1 click (early): off
     else if (event == EV_click1_release) {
         level_before_off = actual_level;
         set_level_and_therm_target(0);
         return EVENT_HANDLED;
     }
-    // 2 clicks (early): abort turning off, if configured for early response
+    // 2 clicks (early): abort turning off
     else if (event == EV_click2_press) {
         set_level_and_therm_target(level_before_off);
         return EVENT_HANDLED;
     }
-    #endif  // if (B_TIMING_OFF == B_RELEASE_T)
     // 1 click: off
     else if (event == EV_1click) {
         set_state(off_state, 0);
@@ -59,7 +53,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
             // make it ramp down instead, if already at max
             else if (actual_level >= 150) { ramp_direction = -1; }
             // make it ramp up if already at min
-            // (off->hold->stepped_min->release causes this state)
             else if (actual_level <= 1) { ramp_direction = 1; }
         }
         // if the button is stuck, err on the side of safety and ramp down
@@ -83,9 +76,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if ((event == EV_click1_hold_release)
              || (event == EV_click2_hold_release)) {
         ramp_direction = -ramp_direction;
-        #ifdef START_AT_MEMORIZED_LEVEL
-        save_config_wl();
-        #endif
         return EVENT_HANDLED;
     }
 
