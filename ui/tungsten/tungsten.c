@@ -127,7 +127,7 @@
 //  but it saves a lot of space by letting us use the -fwhole-program flag)
 
 #include "tungsten/off-mode.c"
-#include "anduril/ramp-mode.c"
+#include "tungsten/ramp-mode.c"
 #include "anduril/load-save-config.c"
 #include "anduril/config-mode.c"
 #include "tungsten/aux-leds.c"
