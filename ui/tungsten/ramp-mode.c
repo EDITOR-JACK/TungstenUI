@@ -18,69 +18,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
     static uint8_t level_before_off = 0;
     #endif
 
-    #if NUM_CHANNEL_MODES > 1
-        channel_mode = cfg.channel_mode;
-    #endif
-
-    uint8_t mode_min = ramp_floor;
-    uint8_t mode_max = ramp_ceil;
-    uint8_t step_size;
-    if (cfg.ramp_style) { step_size = ramp_discrete_step_size; }
-    else { step_size = 1; }
-
-    // how bright is "turbo"?
-    uint8_t turbo_level;
-    #if defined(USE_2C_STYLE_CONFIG)  // user can choose 2C behavior
-        uint8_t style_2c = cfg.ramp_2c_style;
-        #ifdef USE_SIMPLE_UI
-        // simple UI has its own turbo config
-        if (cfg.simple_ui_active) style_2c = cfg.ramp_2c_style_simple;
-        #endif
-        // 0 = no turbo
-        // 1 = Anduril 1 direct to turbo
-        // 2 = Anduril 2 direct to ceiling, or turbo if already at ceiling
-        if (0 == style_2c) turbo_level = mode_max;
-        else if (1 == style_2c) turbo_level = MAX_LEVEL;
-        else {
-            if (memorized_level < mode_max) { turbo_level = mode_max; }
-            else { turbo_level = MAX_LEVEL; }
-        }
-    #elif defined(USE_2C_MAX_TURBO)  // Anduril 1 style always
-        // simple UI: to/from ceiling
-        // full UI: to/from turbo (Anduril1 behavior)
-        #ifdef USE_SIMPLE_UI
-        if (cfg.simple_ui_active) turbo_level = mode_max;
-        else
-        #endif
-        turbo_level = MAX_LEVEL;
-    #else  // Anduril 2 style always
-        // simple UI: to/from ceiling
-        // full UI: to/from ceiling if mem < ceiling,
-        //          or to/from turbo if mem >= ceiling
-        if ((memorized_level < mode_max)
-            #ifdef USE_SIMPLE_UI
-            || cfg.simple_ui_active
-            #endif
-           ) { turbo_level = mode_max; }
-        else { turbo_level = MAX_LEVEL; }
-    #endif
-
-    #ifdef USE_SUNSET_TIMER
-    // handle the shutoff timer first
-    uint8_t sunset_active = sunset_timer;  // save for comparison
-    // clock tick
-    sunset_timer_state(event, arg);
-    // if the timer was just turned on
-    if (sunset_timer  &&  (! sunset_active)) {
-        sunset_timer_orig_level = actual_level;
-    }
-    // if the timer just expired, shut off
-    else if (sunset_active  &&  (! sunset_timer)) {
-        set_state(off_state, 0);
-        return EVENT_HANDLED;
-    }
-    #endif  // ifdef USE_SUNSET_TIMER
-
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
         // remember this level, unless it's 2C turbo
@@ -124,88 +61,31 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // hold: change brightness (brighter, dimmer)
     // click, hold: change brightness (dimmer)
     else if ((event == EV_click1_hold) || (event == EV_click2_hold)) {
-        // ramp infrequently in stepped mode
-        if (cfg.ramp_style && (arg % HOLD_TIMEOUT != 0))
-            return EVENT_HANDLED;
-        #ifdef USE_RAMP_SPEED_CONFIG
-            // ramp slower if user configured things that way
-            if ((! cfg.ramp_style) && (arg % ramp_speed))
-                return EVENT_HANDLED;
-        #endif
-        #ifdef USE_SMOOTH_STEPS
-            // if a brightness transition is already happening,
-            // don't interrupt it
-            // (like 2C for full turbo then 1H to smooth ramp down
-            //  ... without this clause, it flickers because it trips
-            //  the "blink at ramp ceil" clause below, over and over)
-            if (smooth_steps_in_progress) return EVENT_HANDLED;
-        #endif
         // fix ramp direction on first frame if necessary
         if (!arg) {
             // click, hold should always go down if possible
             if (event == EV_click2_hold) { ramp_direction = -1; }
             // make it ramp down instead, if already at max
-            else if (actual_level >= mode_max) { ramp_direction = -1; }
+            else if (actual_level >= 150) { ramp_direction = -1; }
             // make it ramp up if already at min
             // (off->hold->stepped_min->release causes this state)
-            else if (actual_level <= mode_min) { ramp_direction = 1; }
+            else if (actual_level <= 1) { ramp_direction = 1; }
         }
         // if the button is stuck, err on the side of safety and ramp down
-        else if ((arg > TICKS_PER_SECOND * 5
-                    #ifdef USE_RAMP_SPEED_CONFIG
-                    // FIXME: count from time actual_level hits mode_max,
-                    //   not from beginning of button hold
-                    * ramp_speed
-                    #endif
-                    ) && (actual_level >= mode_max)) {
+        else if ((arg > TICKS_PER_SECOND * 5) && (actual_level >= 150)) {
             ramp_direction = -1;
         }
-        memorized_level = nearest_level((int16_t)actual_level \
-                          + (step_size * ramp_direction));
-        #if defined(BLINK_AT_RAMP_CEIL) || defined(BLINK_AT_RAMP_MIDDLE)
-        // only blink once for each threshold
-        // FIXME: blinks at beginning of smooth_steps animation instead
-        // of the end, so it should blink when actual_level reaches a
-        // threshold, instead of when memorized_level does
-        // (one possible fix is to just remove mid-ramp blinks entirely,
-        //  and just blink only when it hits the top while going up)
+        memorized_level = nearest_level((int16_t)actual_level + ramp_direction);
+
+        //blink at min or max level
         if ((memorized_level != actual_level) && (
                 0  // for easier syntax below
-                #ifdef BLINK_AT_RAMP_MIDDLE_1
-                || (memorized_level == BLINK_AT_RAMP_MIDDLE_1)
-                #endif
-                #ifdef BLINK_AT_RAMP_MIDDLE_2
-                || (memorized_level == BLINK_AT_RAMP_MIDDLE_2)
-                #endif
-                #ifdef BLINK_AT_RAMP_CEIL
-                // FIXME: only blink at top when going up, not down
-                || (memorized_level == mode_max)
-                #endif
-                #ifdef BLINK_AT_RAMP_FLOOR
-                || (memorized_level == mode_min)
-                #endif
+                || (memorized_level == 150)
+                || (memorized_level == 1)
                 )) {
             blip();
         }
-        #endif
-        #if defined(BLINK_AT_STEPS)
-        uint8_t foo = cfg.ramp_style;
-        cfg.ramp_style = 1;
-        uint8_t nearest = nearest_level((int16_t)actual_level);
-        cfg.ramp_style = foo;
-        // only blink once for each threshold
-        if ((memorized_level != actual_level) &&
-                    (cfg.ramp_style == 0) &&
-                    (memorized_level == nearest)
-                    )
-        {
-            blip();
-        }
-        #endif
         set_level_and_therm_target(memorized_level);
-        #ifdef USE_SUNSET_TIMER
-        reset_sunset_timer();
-        #endif
         return EVENT_HANDLED;
     }
     // reverse ramp direction on hold release
