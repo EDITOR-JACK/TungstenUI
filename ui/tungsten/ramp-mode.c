@@ -26,7 +26,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         if (overheatIndicator) {
             rgb_led_update(0x20,0); //AUX LED Red High
         } else {
-            rgb_led_update(0x21,0); //AUX LED Orange High
+            rgb_led_update(0x23,0); //AUX LED Cyan High
         } 
         return EVENT_HANDLED;
     }
