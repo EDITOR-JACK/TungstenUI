@@ -189,8 +189,6 @@
 // runs one time at boot, when power is connected
 void setup() {
 
-    rgb_led_update(0x22, 0); //AUX LED Green HIGH
-
     #ifndef START_AT_MEMORIZED_LEVEL
 
         // regular e-switch light, no hard clicky power button
@@ -224,6 +222,7 @@ void setup() {
         push_state(channel_mode_state, 0);
         #endif
 
+        rgb_led_update(0x22, 0); //AUX LED Green for boot
         push_state(off_state, 1);
 
     #else  // if START_AT_MEMORIZED_LEVEL

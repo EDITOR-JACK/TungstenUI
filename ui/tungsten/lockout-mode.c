@@ -16,19 +16,14 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1 click (early): AUX Toggle
+    // 1C (early): AUX Toggle
     else if (event == EV_click1_press) {
         if (auxToggle) {
             rgb_led_update(0x00, 0); //AUX LED off
         } else {
             rgb_led_update(0x21, 0); //AUX LED Orange HIGH
-        }      
-        return EVENT_HANDLED;
-    }
-
-    // 1C: AUX Toggle save state
-    else if (event == EV_1click) {
-        auxToggle = -auxToggle;
+        } 
+        auxToggle = -auxToggle;     
         return EVENT_HANDLED;
     }
 
