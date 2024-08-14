@@ -32,14 +32,6 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // button released
-    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
-        //set_level(0);
-        if (!auxToggle) {
-            rgb_led_update(0x00, 0); //AUX LED off
-        }        
-    }
-
     // 2 clicks (early): turn on at least min level
     else if (event == EV_click2_press) {
         set_level(1);

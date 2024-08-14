@@ -189,6 +189,8 @@
 // runs one time at boot, when power is connected
 void setup() {
 
+    rgb_led_update(0x22, 0); //AUX LED Green HIGH
+
     #ifndef START_AT_MEMORIZED_LEVEL
 
         // regular e-switch light, no hard clicky power button
