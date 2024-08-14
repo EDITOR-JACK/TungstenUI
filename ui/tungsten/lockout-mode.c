@@ -23,7 +23,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         } else {
             rgb_led_update(0x21, 0); //AUX LED Orange HIGH
         } 
-        auxToggle = -auxToggle;     
+        auxToggle = (1-auxToggle);     
         return EVENT_HANDLED;
     }
 
