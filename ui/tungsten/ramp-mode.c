@@ -54,9 +54,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // hold: change brightness (brighter, dimmer)
     // click, hold: change brightness (dimmer)
     else if ((event == EV_click1_hold) || (event == EV_click2_hold)) {
-        set_level_and_therm_target(level_before_off);
         // fix ramp direction on first frame if necessary
         if (!arg) {
+            set_level_and_therm_target(level_before_off);
             // click, hold should always go down if possible
             if (event == EV_click2_hold) { ramp_direction = -1; }
             // make it ramp down instead, if already at max
