@@ -55,7 +55,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
 
     // 2C: Max Level
-    else if (event == EV_click2_release) {
+    else if (event == EV_2clicks) {
         set_state(steady_state, 150);
         return EVENT_HANDLED;
     }
