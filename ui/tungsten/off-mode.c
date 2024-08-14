@@ -48,9 +48,15 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+    // (2 clicks initial press): go to max level, but allow abort for triple click
+    else if (event == EV_click2_press) {
+        set_level(150);
+        return EVENT_HANDLED;
+    }
+
     // 2C: Max Level
-    else if (event == EV_2clicks) {
-        set_state(steady_state, MAX_LEVEL);
+    else if (event == EV_click2_release) {
+        set_state(steady_state, 150);
         return EVENT_HANDLED;
     }
 

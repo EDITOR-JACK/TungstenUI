@@ -20,7 +20,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
     // 1 click (early): off
-    else if (event == EV_click1_release) {
+    else if (event == EV_click1_press) {
         level_before_off = actual_level;
         set_level_and_therm_target(0);
         if (overheatIndicator) {

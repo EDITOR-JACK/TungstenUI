@@ -25,8 +25,13 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+    // 2 clicks (early): turn on at least min level
+    else if (event == EV_click2_press) {
+        set_level(1);
+    }
+
     // 2C: Max Level
-    else if (event == EV_2clicks) {
+    else if (event == EV_click2_release) {
         memorized_level = 150;
         set_state(steady_state, memorized_level);
         return EVENT_HANDLED;
