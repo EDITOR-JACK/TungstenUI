@@ -222,7 +222,7 @@ void setup() {
         push_state(channel_mode_state, 0);
         #endif
 
-        rgb_led_update(0x22, 0); //AUX LED Green for boot
+        rgb_led_update(0x32, 0); //AUX LED Blink Green for boot
         push_state(off_state, 1);
 
     #else  // if START_AT_MEMORIZED_LEVEL

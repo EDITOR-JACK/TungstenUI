@@ -106,6 +106,18 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
         return;
     }
 
+    // blink aux LEDs RED when battery is low
+    // (but if voltage==0, that means we just booted and don't know yet)
+    #ifndef DUAL_VOLTAGE_FLOOR
+    if ((volts) && (volts < VOLTAGE_RED)) {
+        rgb_led_set(0x30);
+        #ifdef USE_BUTTON_LED
+        button_led_set(0x30);
+        #endif
+        return;
+    }
+    #endif
+
     uint8_t pattern = (mode>>4);  // off, low, high, blinking, ... more?
     uint8_t color = mode & 0x0f;
 
@@ -143,9 +155,8 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
 
     // pick a brightness from the animation sequence
     if (pattern == 3) {
-        // uses an odd length to avoid lining up with rainbow loop
-        static const uint8_t animation[] = {2, 1, 0, 0,  0, 0, 0, 0,  0,
-                                            1, 0, 0, 0,  0, 0, 0, 0,  0, 1};
+        static const uint8_t animation[] = {1, 2, 2, 1,  0, 0, 0, 0,
+                                            0, 0, 0, 0,  0, 0, 0, 0};
         frame = (frame + 1) % sizeof(animation);
         pattern = animation[frame];
     }

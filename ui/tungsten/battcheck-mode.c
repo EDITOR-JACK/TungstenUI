@@ -6,7 +6,7 @@ uint8_t battcheck_state(Event event, uint16_t arg) {
     // 1C: OFF
     if (event == EV_1click) {
         set_level(0);
-        rgb_led_update(0x21,0); //AUX LED Orange High 
+        rgb_led_update(0x23,0); //AUX LED Cyan High
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
