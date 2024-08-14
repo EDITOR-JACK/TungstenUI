@@ -7,6 +7,8 @@
     #undef USE_EXTRA_BATTCHECK_DIGIT
 #endif
 #define DEFAULT_AUTOLOCK_TIME 1
+#define HOLD_TIMEOUT 15
+#define RELEASE_TIMEOUT 15
 
 /********* specific settings for known driver types *********/
 

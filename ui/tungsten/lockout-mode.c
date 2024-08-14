@@ -7,6 +7,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) {
         ticks_since_on = 0;
         rgb_led_update(0x00, 0); //AUX LED off
+        auxToggle = 0;
     }
 
     else if (event == EV_tick) {
