@@ -22,12 +22,7 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## TODO
 
-- Blink Red AUX when battery low
-- Blink Green AUX when powered on (boot)
 - Info (battery/temp) blinkout to use AUX leds
-- Breathing AUX leds (PWM)?
-- AUX LED lower voltage??
-- AUX leds come on immediately as main emitter fades off?
 - Beacon mode (using AUX leds?)
 - Momentary from OFF (use memorized level & temperature regulation)
 - Custom AUX PCB w/ amber leds

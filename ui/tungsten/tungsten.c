@@ -204,25 +204,9 @@ void setup() {
             blink_once();
         #endif
 
-        #ifdef USE_FACTORY_RESET
-        if (button_is_pressed())
-            factory_reset();
-        #endif
-
         load_config();
 
-        #if defined(USE_MANUAL_MEMORY) && defined(USE_MANUAL_MEMORY_TIMER)
-        // without this, initial boot-up brightness is wrong
-        // when manual mem is enabled with a non-zero timer
-        if (cfg.manual_memory) manual_memory_restore();
-        #endif
-
-        #if defined(USE_CHANNEL_MODES)
-        // add channel mode functions underneath every other state
-        push_state(channel_mode_state, 0);
-        #endif
-
-        rgb_led_update(0x32, 0); //AUX LED Blink Green for boot
+        rgb_led_update(0x23, 0); //AUX LED Cyan
         push_state(off_state, 1);
 
     #else  // if START_AT_MEMORIZED_LEVEL

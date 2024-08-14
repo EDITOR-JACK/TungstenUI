@@ -106,20 +106,18 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
         return;
     }
 
+    uint8_t pattern = (mode>>4);  // off, low, high, blinking, ... more?
+    uint8_t color = mode & 0x0f;
+
     // blink aux LEDs RED when battery is low
     // (but if voltage==0, that means we just booted and don't know yet)
     #ifndef DUAL_VOLTAGE_FLOOR
     if ((volts) && (volts < VOLTAGE_RED)) {
-        rgb_led_set(0x30);
-        #ifdef USE_BUTTON_LED
-        button_led_set(0x30);
-        #endif
+        pattern = 3;
+        color = 0;
         return;
     }
     #endif
-
-    uint8_t pattern = (mode>>4);  // off, low, high, blinking, ... more?
-    uint8_t color = mode & 0x0f;
 
     // always preview in high mode
     if (setting_rgb_mode_now) { pattern = 2; }
