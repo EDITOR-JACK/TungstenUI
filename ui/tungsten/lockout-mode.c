@@ -27,6 +27,12 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+    // 1H: Momentary AUX
+    else if (event == EV_click1_hold_release) {
+        rgb_led_update(0x00, 0); //AUX LED off
+        auxToggle = 0;
+    }
+
     // 2 clicks (early): turn on at least min level
     else if (event == EV_click2_press) {
         set_level(1);
