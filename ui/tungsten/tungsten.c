@@ -206,9 +206,11 @@ void setup() {
             blink_once();
         #endif
 
+        // assume current temperature is 21 C
+        thermal_config_save(1, 21);
+        
         load_config();
 
-        rgb_led_update(0x23, 0); //AUX LED Cyan
         push_state(off_state, 1);
 
     #else  // if START_AT_MEMORIZED_LEVEL

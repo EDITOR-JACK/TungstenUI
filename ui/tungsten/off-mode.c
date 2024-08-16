@@ -86,7 +86,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 13C: Factory Reset (reboot)
+    // 13H: Factory Reset (reboot)
     else if (event == EV_click13_hold) {
         reboot();
         return EVENT_HANDLED;
