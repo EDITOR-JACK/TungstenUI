@@ -9,10 +9,6 @@
 #define DEFAULT_AUTOLOCK_TIME 5
 #define HOLD_TIMEOUT 15
 #define RELEASE_TIMEOUT 15
-#ifdef RGB_LED_OFF_DEFAULT
-    #undef RGB_LED_OFF_DEFAULT
-#endif
-#define RGB_LED_OFF_DEFAULT 0x21  // High, Orange
 
 /********* specific settings for known driver types *********/
 

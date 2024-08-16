@@ -11,7 +11,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     }
 
     else if (event == EV_tick) {
-        if (arg > HOLD_TIMEOUT) {
+        if (arg > HOLD_TIMEOUT && !moonToggle) {
             go_to_standby = 1;
         }
         return EVENT_HANDLED;

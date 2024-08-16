@@ -12,7 +12,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
             if (overheatIndicator) {
                 rgb_led_update(0x20,0); //AUX LED Red High
             } else {
-                rgb_led_update(cfg.rgb_led_off_mode,0);
+                rgb_led_update(0x21,0);
             } 
             set_state(off_state, 0);
         }
@@ -37,7 +37,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         if (overheatIndicator) {
             rgb_led_update(0x20,0); //AUX LED Red High
         } else {
-            rgb_led_update(cfg.rgb_led_off_mode,0);
+            rgb_led_update(0x21,0);
         } 
         return EVENT_HANDLED;
     }
