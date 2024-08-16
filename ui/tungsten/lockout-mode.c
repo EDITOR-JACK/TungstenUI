@@ -1,13 +1,13 @@
 #pragma once
 
-static int8_t auxToggle = 0;
+static int8_t moonToggle = 0;
 
 uint8_t lockout_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {
         ticks_since_on = 0;
         rgb_led_update(0x00, 0); //AUX LED off
-        auxToggle = 0;
+        moonToggle = 0;
     }
 
     else if (event == EV_tick) {
@@ -19,19 +19,19 @@ uint8_t lockout_state(Event event, uint16_t arg) {
 
     // 1C (early): AUX Toggle
     else if (event == EV_click1_press) {
-        if (auxToggle) {
-            rgb_led_update(0x00, 0); //AUX LED off
+        if (moonToggle) {
+            set_level(0);
         } else {
-            rgb_led_update(0x21, 0); //AUX LED Orange HIGH
+            set_level(1);
         } 
-        auxToggle = (1-auxToggle);     
+        moonToggle = (1-moonToggle);     
         return EVENT_HANDLED;
     }
 
     // 1H: Momentary AUX
     else if (event == EV_click1_hold_release) {
-        rgb_led_update(0x00, 0); //AUX LED off
-        auxToggle = 0;
+        set_level(0);
+        moonToggle = 0;
     }
 
     // 2 clicks (early): turn on at least min level
