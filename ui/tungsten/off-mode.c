@@ -87,7 +87,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
 
     // 5C: Tempcheck
-    else if (event == EV_4clicks) {
+    else if (event == EV_5clicks) {
         set_state(tempcheck_state, 0);
         return EVENT_HANDLED;
     }
