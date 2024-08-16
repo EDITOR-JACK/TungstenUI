@@ -206,9 +206,6 @@ void setup() {
             blink_once();
         #endif
 
-        // assume current temperature is 21 C
-        thermal_config_save(1, 21);
-        
         load_config();
 
         push_state(off_state, 1);

@@ -86,9 +86,10 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 13H: Factory Reset (reboot)
-    else if (event == EV_click13_hold) {
-        reboot();
+    // 5H: Auto Calibrate Temp (to 21C)
+    else if (event == EV_click5_hold) {
+        thermal_config_save(1, 21);
+        blink_once();
         return EVENT_HANDLED;
     }
 
