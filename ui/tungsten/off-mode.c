@@ -68,6 +68,15 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+    // 2H: Max Level Momentary
+    else if (event == EV_click2_hold) {
+        // reset button sequence to avoid activating anything in ramp mode
+        current_event = 0;
+        momentary = 1;
+        set_state(steady_state, 150);
+        return EVENT_HANDLED;
+    }
+
     // (3 clicks initial press): off, to prep for later events
     else if (event == EV_click3_press) {
         set_level(0);

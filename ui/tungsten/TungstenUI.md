@@ -13,7 +13,8 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 - OFF 1C -> Set Level
 - OFF 1H -> Momentary Set Level
-- OFF 2C -> Max Level (turbo)
+- OFF 2C -> Max Level (Turbo)
+- OFF 2H -> Momentary Turbo
 - OFF 3C -> Lockout Manually
 - OFF 4C -> Battery Voltage Check
 - OFF 5C -> Temperature Check
