@@ -94,8 +94,10 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 5H: Auto Calibrate Temp (to 21C)
     else if (event == EV_click5_hold) {
-        thermal_config_save(1, 21);
-        blink_once();
+        if (!arg) {
+            thermal_config_save(1, 21);
+            blink_once();
+        }       
         return EVENT_HANDLED;
     }
 
