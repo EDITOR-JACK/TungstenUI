@@ -25,5 +25,4 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 - Factory reset not working? (useful for temp calibration)
 - Info (battery/temp) blinkout to use AUX leds
 - Beacon mode (using AUX leds?)
-- Momentary from OFF (use memorized level & temperature regulation)
 - Custom AUX PCB w/ amber leds

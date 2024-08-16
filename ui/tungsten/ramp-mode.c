@@ -5,6 +5,19 @@ uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     static uint8_t level_before_off = 0;
 
+    // button was released
+    if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
+        if (momentary)  {
+            set_level_and_therm_target(0);
+            if (overheatIndicator) {
+                rgb_led_update(0x20,0); //AUX LED Red High
+            } else {
+                rgb_led_update(cfg.rgb_led_off_mode,0);
+            } 
+            set_state(off_state, 0);
+        }
+    }
+
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
         overheatIndicator = 0;

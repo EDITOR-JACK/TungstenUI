@@ -2,11 +2,13 @@
 #include "anduril/off-mode.h"
 
 static int8_t overheatIndicator = 0;
+static int8_t momentary = 0;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
+        momentary = 0;
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
         return EVENT_HANDLED;
@@ -45,10 +47,11 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Memorized Level
+    // 1H: Memorized Level Momentary
     else if (event == EV_click1_hold) {
         // reset button sequence to avoid activating anything in ramp mode
         current_event = 0;
+        momentary = 1;
         set_state(steady_state, memorized_level);
         return EVENT_HANDLED;
     }
