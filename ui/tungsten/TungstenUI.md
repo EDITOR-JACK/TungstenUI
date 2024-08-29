@@ -4,8 +4,6 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## Features
 
-### 3 States (LOCKOUT/OFF/ON)
-
 - OFF 1C -> AUX Toggle
 - OFF 1H -> Set Ramp Level
 - OFF 2C -> Max Level
@@ -21,7 +19,6 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## TODO
 
-- Low voltage indicator
 - General cleanup & format this doc better (read up on Markdown)
 - Move key config to central location (AUX modes, etc)
 - Info (battery/temp) blinkout to use AUX leds
