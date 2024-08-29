@@ -9,18 +9,12 @@ uint8_t steady_state(Event event, uint16_t arg) {
     if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
         if (momentary)  {
             set_level_and_therm_target(0);
-            if (overheatIndicator) {
-                rgb_led_update(0x20,0); //AUX LED Red High
-            } else {
-                rgb_led_update(0x21,0);
-            } 
             set_state(off_state, 0);
         }
     }
 
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
-        overheatIndicator = 0;
         // remember this level, unless it's 2C turbo
         if (arg < 150)
             memorized_level = arg;
@@ -34,17 +28,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if (event == EV_click1_press) {
         level_before_off = actual_level;
         set_level_and_therm_target(0);
-        if (overheatIndicator) {
-            rgb_led_update(0x20,0); //AUX LED Red High
-        } else {
-            rgb_led_update(0x21,0);
-        } 
         return EVENT_HANDLED;
     }
     // 2 clicks (early): abort turning off
     else if (event == EV_click2_press) {
         set_level_and_therm_target(level_before_off);
-        rgb_led_update(0x00,0); //AUX LED Off
     }
     // 1 click: off
     else if (event == EV_1click) {
@@ -138,7 +126,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
-        overheatIndicator = 1;
         #if 0
         blip();
         #endif
