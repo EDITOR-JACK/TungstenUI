@@ -25,11 +25,6 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     else if (event == EV_sleep_tick) {
         if (ticks_since_on < 255) ticks_since_on ++;
-        if (AUXtoggle) {
-            rgb_led_update(0x00, arg); //AUX LED low voltage maybe?
-        } else {
-            rgb_led_update(0x21, arg); //AUX LED low voltage maybe?
-        } 
         return EVENT_HANDLED;
     }
 

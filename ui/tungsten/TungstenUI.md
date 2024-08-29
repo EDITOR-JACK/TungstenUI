@@ -21,6 +21,7 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## TODO
 
+- Low voltage indicator
 - General cleanup & format this doc better (read up on Markdown)
 - Move key config to central location (AUX modes, etc)
 - Info (battery/temp) blinkout to use AUX leds
