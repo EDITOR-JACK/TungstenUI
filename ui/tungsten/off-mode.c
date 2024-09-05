@@ -9,11 +9,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
         momentary = 0;
-        AUXtoggle = 0;
-        // if low (but not critical) voltage
-        if ((voltage) && (voltage < VOLTAGE_RED)) {
-            rgb_led_update(0x20, 0); //AUX LED Red High
-        }
+        AUXtoggle = 0;     
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
         return EVENT_HANDLED;
@@ -29,6 +25,10 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     else if (event == EV_sleep_tick) {
         if (ticks_since_on < 255) ticks_since_on ++;
+        // if low (but not critical) voltage
+        if ((voltage) && (voltage < VOLTAGE_RED)) {
+            rgb_led_update(0x20, 0); //AUX LED Red High
+        }
         return EVENT_HANDLED;
     }
 
