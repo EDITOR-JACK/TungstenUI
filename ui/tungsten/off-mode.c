@@ -28,6 +28,8 @@ uint8_t off_state(Event event, uint16_t arg) {
         // if low (but not critical) voltage
         if ((voltage) && (voltage < VOLTAGE_RED)) {
             rgb_led_update(0x30, arg); //AUX LED Red Blink
+        } else {
+            rgb_led_update(0x31, 0);
         }
         return EVENT_HANDLED;
     }
