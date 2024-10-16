@@ -14,6 +14,9 @@ inline void set_level_aux_leds(uint8_t level) {
         #ifdef USE_INDICATOR_LED
             indicator_led((level > 0) + (level > DEFAULT_LEVEL));
         #endif
+        #ifdef USE_BUTTON_LED
+            button_led_set((level > 0) + (level > DEFAULT_LEVEL));
+        #endif
         }
     #else  // turn off front-facing aux LEDs while main LEDs are on
         #if defined(USE_INDICATOR_LED) || defined(USE_AUX_RGB_LEDS)
@@ -23,6 +26,9 @@ inline void set_level_aux_leds(uint8_t level) {
             #endif
             #ifdef USE_AUX_RGB_LEDS
                 rgb_led_set(0);
+                #ifdef USE_BUTTON_LED
+                    button_led_set((level > 0) + (level > DEFAULT_LEVEL));
+                #endif
             #endif
         }
         #endif
@@ -42,6 +48,9 @@ inline void set_level_aux_rgb_leds(uint8_t level) {
         }
         // some drivers can be wired with RGB or single color to button
         // ... so support both even though only one is connected
+        #ifdef USE_BUTTON_LED
+            button_led_set((level > 0) + (level > DEFAULT_LEVEL));
+        #endif
     }
 }
 #endif  // ifdef USE_AUX_RGB_LEDS_WHILE_ON
