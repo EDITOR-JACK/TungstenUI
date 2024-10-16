@@ -31,8 +31,15 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1C: Max
+    // (1 click initial release): max level
     else if (event == EV_click1_release) {
+        set_level(150);
+        button_led_set(2);
+        return EVENT_HANDLED;
+    }
+
+    // 1C: Max
+    else if (event == EV_1click) {
         set_state(steady_state, 150);
         return EVENT_HANDLED;
     }
@@ -41,6 +48,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     else if (event == EV_click1_hold) {
         // reset button sequence to avoid activating anything in ramp mode
         current_event = 0;
+        button_led_set(0);
         set_state(steady_state, 1);
     }
 
