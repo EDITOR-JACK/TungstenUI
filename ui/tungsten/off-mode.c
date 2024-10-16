@@ -9,6 +9,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         ticks_since_on = 0;
         momentary = 0;  
         button_led_set(0);
+        rgb_led_update(0x00, 0);
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
         return EVENT_HANDLED;
