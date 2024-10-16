@@ -2,12 +2,14 @@
 #include "anduril/off-mode.h"
 
 static int8_t momentary = 0;
+static int8_t AUXtoggle = 0;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
-        momentary = 0;  
+        momentary = 0; 
+        AUXtoggle = 0; 
         button_led_set(1);
         rgb_led_update(0x00, 0);
         // sleep while off (unless delay requested)
@@ -47,18 +49,26 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Low
+    // 1H: Ramp
     else if (event == EV_click1_hold) {
-        // reset button sequence to avoid activating anything in ramp mode
-        current_event = 0;
-        button_led_set(0);
         set_state(steady_state, 1);
     }
 
     // (2 clicks initial press): off, to prep for later events
     else if (event == EV_click2_press) {
         set_level(0);
-        button_led_set(0);
+        return EVENT_HANDLED;
+    }
+
+    // 3C: Toggle AUX LEDs
+    else if (event == EV_click3_press) {
+        if (AUXtoggle) {
+            rgb_led_update(0x00, 0); //AUX LED Off
+        } else {
+            rgb_led_update(0x21, 0); //AUX LED Orange High
+        } 
+        AUXtoggle = (1-AUXtoggle); 
+        
         return EVENT_HANDLED;
     }
 
