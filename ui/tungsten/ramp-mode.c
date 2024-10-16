@@ -15,6 +15,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
+        button_led_set(0);
         // remember this level, unless it's 2C turbo
         if (arg < 150)
             memorized_level = arg;
