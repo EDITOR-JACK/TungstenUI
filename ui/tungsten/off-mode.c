@@ -32,7 +32,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
 
     // 1C: Max
-    else if (event == EV_1click) {
+    else if (event == EV_click1_release) {
         set_state(steady_state, 150);
         return EVENT_HANDLED;
     }
