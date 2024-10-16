@@ -5,3 +5,6 @@
 #include "hank/noctigon-dm11/boost/anduril.h"
 #include "hank/noctigon-dm11/boost/hwdef.h"
 #include "hank/anduril.h"
+
+#undef DEFAULT_THERM_CEIL
+#define DEFAULT_THERM_CEIL 55

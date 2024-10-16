@@ -28,3 +28,5 @@
 // for consistency with KR4 (not otherwise necessary though)
 #define USE_SOFT_FACTORY_RESET
 
+#undef DEFAULT_THERM_CEIL
+#define DEFAULT_THERM_CEIL 55
