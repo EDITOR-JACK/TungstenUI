@@ -39,25 +39,13 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
     switch (pattern) {
         case 0:  // off
             result = 0;
-            #ifdef USE_BUTTON_LED
-            button_led_result = 0;
-            #endif
             break;
         case 1:  // low
             result = actual_color;
-            #ifdef USE_BUTTON_LED
-            button_led_result = 1;
-            #endif
             break;
         default:  // high
             result = (actual_color << 1);
-            #ifdef USE_BUTTON_LED
-            button_led_result = 2;
-            #endif
             break;
     }
     rgb_led_set(result);
-    #ifdef USE_BUTTON_LED
-    button_led_set(button_led_result);
-    #endif
 }
