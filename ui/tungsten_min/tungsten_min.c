@@ -156,7 +156,7 @@
 #endif
 
 #ifdef USE_LOCKOUT_MODE
-#include "tungsten_min/lockout-mode.c"
+#include "tungsten/lockout-mode.c"
 #endif
 
 #if (defined(USE_MOMENTARY_MODE) || defined(USE_TACTICAL_MODE))

@@ -88,5 +88,11 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+    // 6C: Lockout
+    else if (event == EV_6clicks) {
+        set_state(lockout_state, 0);
+        return EVENT_HANDLED;
+    }
+
     return EVENT_NOT_HANDLED;
 }

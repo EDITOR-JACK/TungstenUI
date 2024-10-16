@@ -19,8 +19,8 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 3C: Off
-    else if (event == EV_3clicks) {
+    // 6C: Off
+    else if (event == EV_6clicks) {
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
