@@ -86,3 +86,5 @@
 
 // can't reset the normal way because power is connected before the button
 #define USE_SOFT_FACTORY_RESET
+
+#undef USE_INDICATOR_LED_WHILE_RAMPING
