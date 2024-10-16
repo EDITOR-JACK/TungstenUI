@@ -7,8 +7,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
-        momentary = 0; 
-        AUXtoggle = 0; 
+        momentary = 0;
         button_led_set(1); //Button LED Low
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
