@@ -8,7 +8,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
         momentary = 0;  
-        button_led_set(0);
+        button_led_set(1);
         rgb_led_update(0x00, 0);
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
@@ -76,6 +76,8 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 6C: Lockout
     else if (event == EV_6clicks) {
+        rgb_led_update(0x20, 0);
+        button_led_set(2);
         set_state(lockout_state, 0);
         return EVENT_HANDLED;
     }

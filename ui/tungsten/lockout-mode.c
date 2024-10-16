@@ -4,6 +4,8 @@
 uint8_t lockout_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {
+        rgb_led_update(0x00, 0);
+        button_led_set(0);
         ticks_since_on = 0;
     }
 
