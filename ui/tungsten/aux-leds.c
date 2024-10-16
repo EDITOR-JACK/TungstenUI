@@ -28,7 +28,7 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
 
     // pick a brightness from the animation sequence
     if (pattern == 3) {
-        static const uint8_t animation[] = {0, 1, 1, 2, 2, 2, 2, 1, 1};
+        static const uint8_t animation[] = {0, 0, 0, 0, 0, 2, 2, 2};
         frame = (frame + 1) % sizeof(animation);
         pattern = animation[frame];
     }

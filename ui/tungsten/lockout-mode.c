@@ -22,6 +22,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     // 6C: Off
     else if (event == EV_6clicks) {
         rgb_led_update(0x22, 0);
+        button_led_set(2);
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
