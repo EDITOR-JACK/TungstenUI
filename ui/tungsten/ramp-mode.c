@@ -28,12 +28,10 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if (event == EV_click1_press) {
         level_before_off = actual_level;
         set_level_and_therm_target(0);
-        button_led_set(1);
         return EVENT_HANDLED;
     }
     // 2 clicks (early): abort turning off
     else if (event == EV_click2_press) {
-        button_led_set(2);
         set_level_and_therm_target(level_before_off);
     }
     // 1 click: off

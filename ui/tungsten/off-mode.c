@@ -2,7 +2,6 @@
 #include "anduril/off-mode.h"
 
 static int8_t momentary = 0;
-static int8_t AUXtoggle = 0;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
@@ -29,29 +28,22 @@ uint8_t off_state(Event event, uint16_t arg) {
         // if low (but not critical) voltage
         if ((voltage) && (voltage < VOLTAGE_RED)) {
             rgb_led_update(0x30, arg); //AUX LED Red Blink
-        } else if (!AUXtoggle) {
+        } else {
             rgb_led_update(0x00, 0); //AUX LED Off
         }
         return EVENT_HANDLED;
     }
 
-    // 1C: Toggle AUX LEDs
+    // 1C: Low
     else if (event == EV_click1_press) {
-        if (AUXtoggle) {
-            rgb_led_update(0x00, 0); //AUX LED Off
-            button_led_set(1); //Button LED Low
-        } else {
-            rgb_led_update(0x20, 0); //AUX LED Red
-            button_led_set(0); //Button LED Off
-        } 
-        AUXtoggle = (1-AUXtoggle); 
-        
+        set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
 
     // 1H: Ramp
     else if (event == EV_click1_hold) {
         set_state(steady_state, 1);
+        return EVENT_HANDLED;
     }
 
     // (2 clicks initial press): go to max, allow abort for triple click
