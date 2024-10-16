@@ -2,14 +2,12 @@
 #include "anduril/off-mode.h"
 
 static int8_t momentary = 0;
-static int8_t AUXtoggle = 0;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
-        momentary = 0;
-        AUXtoggle = 0;    
+        momentary = 0;  
         button_led_set(0);
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
@@ -33,48 +31,21 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1C: Toggle AUX LEDs
-    else if (event == EV_click1_press) {
-        if (AUXtoggle) {
-            rgb_led_update(0x00, 0); //AUX LED Off
-            set_level(0);
-        } else {
-            rgb_led_update(0x21, 0); //AUX LED Orange High
-            set_level(1);
-        } 
-        AUXtoggle = (1-AUXtoggle); 
-        
+    // 1C: Max
+    else if (event == EV_1click) {
+        set_state(steady_state, 150);
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp
+    // 1H: Low
     else if (event == EV_click1_hold) {
+        // reset button sequence to avoid activating anything in ramp mode
+        current_event = 0;
         set_state(steady_state, 1);
     }
 
-    // (2 clicks initial press): go to max, allow abort for triple click
+    // (2 clicks initial press): off, to prep for later events
     else if (event == EV_click2_press) {
-        set_level(150);
-        return EVENT_HANDLED;
-    }
-
-    // 2C: Max Level
-    else if (event == EV_2clicks) {
-        set_state(steady_state, 150);
-        return EVENT_HANDLED;
-    }
-
-    // 2H: Max Level Momentary
-    else if (event == EV_click2_hold) {
-        // reset button sequence to avoid activating anything in ramp mode
-        current_event = 0;
-        momentary = 1;
-        set_state(steady_state, 150);
-        return EVENT_HANDLED;
-    }
-
-    // (3 clicks initial press): off, to prep for later events
-    else if (event == EV_click3_press) {
         set_level(0);
         button_led_set(0);
         return EVENT_HANDLED;
