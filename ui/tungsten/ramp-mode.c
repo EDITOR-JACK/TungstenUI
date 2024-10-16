@@ -194,7 +194,7 @@ uint8_t nearest_level(int16_t target) {
 
 void set_level_and_therm_target(uint8_t level) {
     target_level = level;
-    set_level(level);
+    (level);
 }
 
 //Looks like these need to be defined here in order for FSM to compile...

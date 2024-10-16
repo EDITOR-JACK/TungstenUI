@@ -27,7 +27,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         if (ticks_since_on < 255) ticks_since_on ++;
         // if low (but not critical) voltage
         if ((voltage) && (voltage < VOLTAGE_RED)) {
-            rgb_led_update(0x20, 0); //AUX LED Red High
+            rgb_led_update(0x20, 3); //AUX LED Red High
         }
         return EVENT_HANDLED;
     }
