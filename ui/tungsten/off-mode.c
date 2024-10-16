@@ -10,8 +10,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         ticks_since_on = 0;
         momentary = 0; 
         AUXtoggle = 0; 
-        button_led_set(1);
-        rgb_led_update(0x00, 0);
+        button_led_set(1); //Button LED Low
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
         return EVENT_HANDLED;
@@ -30,22 +29,23 @@ uint8_t off_state(Event event, uint16_t arg) {
         // if low (but not critical) voltage
         if ((voltage) && (voltage < VOLTAGE_RED)) {
             rgb_led_update(0x30, arg); //AUX LED Red Blink
-        } else {
-            rgb_led_update(0x00, 0);
+        } else if (!AUXtoggle) {
+            rgb_led_update(0x00, 0); //AUX LED Off
         }
         return EVENT_HANDLED;
     }
 
-    // (1 click initial release): max level
-    else if (event == EV_click1_release) {
-        set_level(150);
-        button_led_set(2);
-        return EVENT_HANDLED;
-    }
-
-    // 1C: Max
-    else if (event == EV_1click) {
-        set_state(steady_state, 150);
+    // 1C: Toggle AUX LEDs
+    else if (event == EV_click1_press) {
+        if (AUXtoggle) {
+            rgb_led_update(0x00, 0); //AUX LED Off
+            button_led_set(1); //Button LED Low
+        } else {
+            rgb_led_update(0x20, 0); //AUX LED Red
+            button_led_set(0); //Button LED Off
+        } 
+        AUXtoggle = (1-AUXtoggle); 
+        
         return EVENT_HANDLED;
     }
 
@@ -54,21 +54,32 @@ uint8_t off_state(Event event, uint16_t arg) {
         set_state(steady_state, 1);
     }
 
-    // (2 clicks initial press): off, to prep for later events
+    // (2 clicks initial press): go to max, allow abort for triple click
     else if (event == EV_click2_press) {
-        set_level(0);
+        set_level(150);
+        button_led_set(2); //Button LED High
         return EVENT_HANDLED;
     }
 
-    // 3C: Toggle AUX LEDs
+    // 2C: Max Level
+    else if (event == EV_2clicks) {
+        set_state(steady_state, 150);
+        return EVENT_HANDLED;
+    }
+
+    // 2H: Max Level Momentary
+    else if (event == EV_click2_hold) {
+        // reset button sequence to avoid activating anything in ramp mode
+        current_event = 0;
+        momentary = 1;
+        set_state(steady_state, 150);
+        return EVENT_HANDLED;
+    }
+
+    // (3 clicks initial press): off, to prep for later events
     else if (event == EV_click3_press) {
-        if (AUXtoggle) {
-            rgb_led_update(0x00, 0); //AUX LED Off
-        } else {
-            rgb_led_update(0x21, 0); //AUX LED Orange High
-        } 
-        AUXtoggle = (1-AUXtoggle); 
-        
+        set_level(0);
+        button_led_set(1); //Button LED Low
         return EVENT_HANDLED;
     }
 
@@ -86,8 +97,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 6C: Lockout
     else if (event == EV_6clicks) {
-        rgb_led_update(0x20, 0);
-        button_led_set(2);
+        blip();
         set_state(lockout_state, 0);
         return EVENT_HANDLED;
     }

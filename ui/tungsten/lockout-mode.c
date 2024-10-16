@@ -4,8 +4,8 @@
 uint8_t lockout_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {
-        rgb_led_update(0x00, 0);
-        button_led_set(0);
+        rgb_led_update(0x00, 0);  //AUX LED Off
+        button_led_set(0);  //Button LED Off
         ticks_since_on = 0;
     }
 
@@ -23,8 +23,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
 
     // 6C: Off
     else if (event == EV_6clicks) {
-        rgb_led_update(0x22, 0);
-        button_led_set(2);
+        rgb_led_update(0x22, 0); //Blip green AUX
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
