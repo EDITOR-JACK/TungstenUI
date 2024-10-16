@@ -33,8 +33,14 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1C: Low
+    // (1 click initial press): go to min level
     else if (event == EV_click1_press) {
+        set_level(1);
+        return EVENT_HANDLED;
+    }
+
+    // 1C: Low
+    else if (event == EV_1click) {
         set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
@@ -42,6 +48,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 1H: Ramp
     else if (event == EV_click1_hold) {
         set_state(steady_state, 1);
+        button_led_set(2); //Button LED High
         return EVENT_HANDLED;
     }
 
