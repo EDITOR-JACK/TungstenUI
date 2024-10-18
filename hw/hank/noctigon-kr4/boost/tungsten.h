@@ -7,4 +7,6 @@
 #include "hank/anduril.h"
 
 #undef DEFAULT_THERM_CEIL
-#define DEFAULT_THERM_CEIL 55
+#define DEFAULT_THERM_CEIL 60
+
+#undef USE_BUTTON_LED
