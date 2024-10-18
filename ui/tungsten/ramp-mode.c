@@ -28,13 +28,17 @@ uint8_t steady_state(Event event, uint16_t arg) {
     else if (event == EV_click1_press) {
         level_before_off = actual_level;
         set_level_and_therm_target(0);
+        #ifdef USE_BUTTON_LED
         button_led_set(1); //Button LED Low
+        #endif
         return EVENT_HANDLED;
     }
     // 2 clicks (early): abort turning off
     else if (event == EV_click2_press) {
         set_level_and_therm_target(level_before_off);
+        #ifdef USE_BUTTON_LED
         button_led_set(2); //Button LED High
+        #endif
     }
     // 1 click: off
     else if (event == EV_1click) {
@@ -58,7 +62,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // fix ramp direction on first frame if necessary
         if (!arg) {
             set_level_and_therm_target(level_before_off);
-            button_led_set(2);
+            #ifdef USE_BUTTON_LED
+            button_led_set(2); //Button LED High
+            #endif
             // click, hold should always go down if possible
             if (event == EV_click2_hold) { ramp_direction = -1; }
             // make it ramp down instead, if already at max
