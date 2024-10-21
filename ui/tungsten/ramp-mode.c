@@ -29,7 +29,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         level_before_off = actual_level;
         set_level_and_therm_target(0);
         #ifdef USE_BUTTON_LED
-        button_led_set(1); //Button LED Low
+        button_led_set(0); //Button LED Off
         #endif
         return EVENT_HANDLED;
     }

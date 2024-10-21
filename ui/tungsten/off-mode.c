@@ -11,7 +11,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         momentary = 0;
         AUXtoggle = 0; 
         #ifdef USE_BUTTON_LED
-        button_led_set(1); //Button LED Low
+        button_led_set(0); //Button LED Off
         #endif   
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
@@ -41,7 +41,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     else if (event == EV_click1_press) {
         if (AUXtoggle) {
             #ifdef USE_BUTTON_LED
-            button_led_set(1); //Button LED Low
+            button_led_set(0); //Button LED Off
             #else
             rgb_led_update(0x00, 0); //AUX LED Off
             #endif
@@ -94,7 +94,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     else if (event == EV_click3_press) {
         set_level(0);
         #ifdef USE_BUTTON_LED
-        button_led_set(1); //Button LED Low
+        button_led_set(0); //Button LED Off
         #endif 
         return EVENT_HANDLED;
     }
