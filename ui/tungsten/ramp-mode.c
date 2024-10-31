@@ -64,9 +64,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // fix ramp direction on first frame if necessary
         if (!arg) {
             set_level_and_therm_target(level_before_off);
-            #ifdef USE_BUTTON_LED
-            button_led_set(2); //Button LED High
-            #endif
             // click, hold should always go down if possible
             if (event == EV_click2_hold) { ramp_direction = -1; }
             // make it ramp down instead, if already at max
