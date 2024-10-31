@@ -29,7 +29,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     }
 
     // 6C: Off
-    else if (event == EV_6clicks) {
+    else if (event == EV_click6_press) {
         rgb_led_update(0x22, 0); //Green AUX
         set_state(off_state, 0);
         return EVENT_HANDLED;

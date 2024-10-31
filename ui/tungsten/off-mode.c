@@ -33,6 +33,9 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 1 click (early)
     else if (event == EV_click1_press) {
         set_level(1);
+        #ifdef USE_BUTTON_LED
+        button_led_set(0); //Button LED OFF
+        #endif
         return EVENT_HANDLED;
     }
 
