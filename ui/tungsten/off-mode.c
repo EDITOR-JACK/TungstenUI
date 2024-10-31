@@ -30,19 +30,19 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1C: Ultra Low
+    // 1 click (early)
     else if (event == EV_click1_press) {
         set_level(1);
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp
-    else if (event == EV_click1_hold) {
+    // 1C: Ultra Low | 1H: Ramp
+    else if (event == EV_1click || event == EV_click1_hold) {
         set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
 
-    // (2 clicks initial press): go to max, allow abort for triple click
+    // 2 clicks (early): go to max, allow abort for triple click
     else if (event == EV_click2_press) {
         set_level(150);
         return EVENT_HANDLED;

@@ -4,7 +4,7 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 ## Features
 
-- OFF 1C -> AUX Toggle
+- OFF 1C -> Ultra Low
 - OFF 1H -> Set Ramp Level
 - OFF 2C -> Max Level
 - OFF 2H -> Momentary Max Level
@@ -14,7 +14,8 @@ Based on Anduril - using FSM toolkit to design a minimal, functional flashlight 
 
 - ON 1C -> OFF
 - ON 1H/2H -> Ramp Brightness Up/Down
-- ON 2C -> Max Level (Turbo)
+- ON 2C -> Toggle Button LED
+- ON 3C -> Toggle AUX LED
 
 - TEMPCHECK 5H -> Calibrate Temperature
 
