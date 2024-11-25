@@ -7,7 +7,6 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {     
         ticks_since_on = 0;
-        momentary = 0; 
         // sleep while off (unless delay requested)
         if (! arg) { go_to_standby = 1; }
         return EVENT_HANDLED;
@@ -26,57 +25,19 @@ uint8_t off_state(Event event, uint16_t arg) {
         // if low (but not critical) voltage
         if ((voltage) && (voltage < VOLTAGE_RED)) {
             rgb_led_update(0x30, arg); //AUX LED Red Blink
-        }
+        } else (
+            rgb_led_update(0x00, 0); //AUX LED Off
+        )
         return EVENT_HANDLED;
     }
 
-    // 1 click (early)
+    // 1H: Ramp
     else if (event == EV_click1_press) {
-        set_level(1);
-        #ifdef USE_BUTTON_LED
-        button_led_set(0); //Button LED OFF
-        #endif
-        return EVENT_HANDLED;
-    }
-
-    // 1C: Ultra Low | 1H: Ramp
-    else if (event == EV_1click || event == EV_click1_hold) {
         set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
 
-    // 2 clicks (early): go to max, allow abort for triple click
-    else if (event == EV_click2_press) {
-        set_level(150);
-        return EVENT_HANDLED;
-    }
-
-    // 2C: Max Level
-    else if (event == EV_2clicks) {
-        set_state(steady_state, 150);
-        return EVENT_HANDLED;
-    }
-
-    // 2H: Max Level Momentary
-    else if (event == EV_click2_hold) {
-        // reset button sequence to avoid activating anything in ramp mode
-        current_event = 0;
-        momentary = 1;
-        set_state(steady_state, 150);
-        return EVENT_HANDLED;
-    }
-
-    // (3 clicks initial press): off, to prep for later events
-    else if (event == EV_click3_press) {
-        set_level(0);
-        #ifdef USE_BUTTON_LED
-        button_led_set(0); //Button LED OFF
-        #endif 
-        rgb_led_update(0x00, 0); //AUX OFF
-        return EVENT_HANDLED;
-    }
-
-    // 4C: Battcheck
+    /* 4C: Battcheck
     else if (event == EV_4clicks) {
         set_state(battcheck_state, 0);
         return EVENT_HANDLED;
@@ -94,6 +55,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         set_state(lockout_state, 0);
         return EVENT_HANDLED;
     }
+    */
 
     return EVENT_NOT_HANDLED;
 }

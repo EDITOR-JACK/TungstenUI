@@ -5,21 +5,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     static uint8_t level_before_off = 0;
 
-    // button was released
-    if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
-        if (momentary)  {
-            set_level_and_therm_target(0);
-            set_state(off_state, 0);
-        }
-    }
-
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
-        // remember this level, unless it's 2C turbo
-        if (arg < 150)
-            memorized_level = arg;
-        // use the requested level even if not memorized
-        arg = nearest_level(arg);
         set_level_and_therm_target(arg);
         ramp_direction = 1;
         return EVENT_HANDLED;
@@ -38,19 +25,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    #ifdef USE_BUTTON_LED
-    // 2C: Toggle Button LED
-    else if (event == EV_2clicks) {
-        button_led_set(1); //Button LED Low  
-        set_state(off_state, 0);
-        return EVENT_HANDLED;
-    }
-    #endif 
-
-    // 3C: Toggle AUX LED
-    else if (event == EV_3clicks) {
-        rgb_led_update(0x21, 0); //AUX LED Orange High
-        set_state(off_state, 0);
+    // 2C: Turbo
+    else if (event == EV_2click) {
+        set_level_and_therm_target(150);
         return EVENT_HANDLED;
     }
 
