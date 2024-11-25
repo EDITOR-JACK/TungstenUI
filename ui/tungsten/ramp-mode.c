@@ -22,7 +22,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // 1C: OFF
     else if (event == EV_1click) {
-        set_state(off_state, 0);
+        if (arg > HOLD_TIMEOUT) {
+            set_state(off_state, 0);
+        }
         return EVENT_HANDLED;
     }
 
@@ -34,7 +36,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
 
     // 2C: Turbo
-    else if (event == EV_2clicks) {
+    else if (event == EV_click2_press) {
         set_level_and_therm_target(150);
         return EVENT_HANDLED;
     }
