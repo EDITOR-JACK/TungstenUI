@@ -26,83 +26,16 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 2C: Turbo
-    else if (event == EV_2clicks) {
-        set_level_and_therm_target(150);
-        return EVENT_HANDLED;
-    }
-
-    // hold: change brightness (brighter, dimmer)
-    // click, hold: change brightness (dimmer)
-    else if ((event == EV_click1_hold) || (event == EV_click2_hold)) {
-        // fix ramp direction on first frame if necessary
-        if (!arg) {
-            set_level_and_therm_target(level_before_off);
-            // click, hold should always go down if possible
-            if (event == EV_click2_hold) { ramp_direction = -1; }
-            // make it ramp down instead, if already at max
-            else if (actual_level >= 150) { ramp_direction = -1; }
-            // make it ramp up if already at min
-            else if (actual_level <= 1) { ramp_direction = 1; }
-        }
-        // if the button is stuck, err on the side of safety and ramp down
-        else if ((arg > TICKS_PER_SECOND * 5) && (actual_level >= 150)) {
-            ramp_direction = -1;
-        }
-        memorized_level = nearest_level((int16_t)actual_level + ramp_direction);
-
-        //blink at min or max level
-        if ((memorized_level != actual_level) && (
-                0  // for easier syntax below
-                || (memorized_level == 150)
-                || (memorized_level == 1)
-                )) {
-            blip();
-        }
+    // 1H: Ramp
+    else if (event == EV_click1_hold) {
+        memorized_level = nearest_level((int16_t)actual_level + 1);
         set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
     }
-    // reverse ramp direction on hold release
-    else if ((event == EV_click1_hold_release)
-             || (event == EV_click2_hold_release)) {
-        ramp_direction = -ramp_direction;
-        return EVENT_HANDLED;
-    }
 
-    else if (event == EV_tick) {
-        // un-reverse after 1 second
-        if (arg == AUTO_REVERSE_TIME) ramp_direction = 1;
-
-        #ifdef USE_SET_LEVEL_GRADUALLY
-        int16_t diff = gradual_target - actual_level;
-        static uint16_t ticks_since_adjust = 0;
-        ticks_since_adjust++;
-        if (diff) {
-            uint16_t ticks_per_adjust = 256 / GRADUAL_ADJUST_SPEED;
-            if (diff < 0) {
-                //diff = -diff;
-                if (actual_level > THERM_FASTER_LEVEL) {
-                    #ifdef THERM_HARD_TURBO_DROP
-                    ticks_per_adjust >>= 2;
-                    #endif
-                    ticks_per_adjust >>= 2;
-                }
-            } else {
-                // rise at half speed
-                ticks_per_adjust <<= 1;
-            }
-            while (diff) {
-                ticks_per_adjust >>= 1;
-                //diff >>= 1;
-                diff /= 2;  // because shifting produces weird behavior
-            }
-            if (ticks_since_adjust > ticks_per_adjust)
-            {
-                gradual_tick();
-                ticks_since_adjust = 0;
-            }
-        }
-        #endif  // ifdef USE_SET_LEVEL_GRADUALLY
+    // 2C: Turbo
+    else if (event == EV_2clicks) {
+        set_level_and_therm_target(150);
         return EVENT_HANDLED;
     }
 
