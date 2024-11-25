@@ -7,7 +7,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // turn LED on when we first enter the mode
     if (event == EV_enter_state) {
-        memorized_level == arg;
+        memorized_level = arg;
         set_level_and_therm_target(arg);
         ramp_direction = 1;
         return EVENT_HANDLED;
