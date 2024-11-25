@@ -33,9 +33,6 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
         pattern = animation[frame];
     }
     uint8_t result;
-    #ifdef USE_BUTTON_LED
-    uint8_t button_led_result;
-    #endif
     switch (pattern) {
         case 0:  // off
             result = 0;
