@@ -29,7 +29,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp
+    // Click instantly enters ON state
     else if (event == EV_click1_press) {
         set_state(steady_state, 1);
         return EVENT_HANDLED;

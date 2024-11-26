@@ -2,21 +2,33 @@
 #include "anduril/ramp-mode.h"
 
 uint8_t steady_state(Event event, uint16_t arg) {
-    static int8_t ramp_direction = 1;
-    static uint8_t level_before_off = 0;
 
-    // turn LED on when we first enter the mode
+    // Enter State
     if (event == EV_enter_state) {
         memorized_level = arg;
         set_level_and_therm_target(arg);
-        ramp_direction = 1;
+        return EVENT_HANDLED;
+    }
+
+    // 1H: Ramp
+    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
+        memorized_level = nearest_level((int16_t)actual_level + 1);
+        set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
     }
 
     // 1 click (early): OFF
     else if (event == EV_click1_press) {
-        level_before_off = actual_level;
         set_level_and_therm_target(0);
+        return EVENT_HANDLED;
+    }
+
+    // Click release during hold timeout: LOW
+    else if (event == EV_click1_release) {
+        if (arg < HOLD_TIMEOUT) {
+            memorized_level = 1;
+            set_level_and_therm_target(1);
+        }
         return EVENT_HANDLED;
     }
 
@@ -28,13 +40,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp
-    else if (event == EV_click1_hold) {
-        memorized_level = nearest_level((int16_t)actual_level + 1);
-        set_level_and_therm_target(memorized_level);
-        return EVENT_HANDLED;
-    }
-
     // 2C: Turbo
     else if (event == EV_click2_press) {
         set_level_and_therm_target(150);
@@ -43,9 +48,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
-        #if 0
-        blip();
-        #endif
         #ifdef THERM_HARD_TURBO_DROP
         //if (actual_level > THERM_FASTER_LEVEL) {
         if (actual_level == MAX_LEVEL) {
@@ -72,9 +74,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // underheating: increase slowly if we're lower than the target
     //               (proportional to how low we are)
     else if (event == EV_temperature_low) {
-        #if 0
-        blip();
-        #endif
         if (actual_level < target_level) {
             int16_t stepup = actual_level + arg;
             if (stepup > target_level) stepup = target_level;
