@@ -16,13 +16,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1C: OFF
+    /* 1C: OFF
     else if (event == EV_1click) {
         if (arg > HOLD_TIMEOUT) {
             set_state(off_state, 0);
         }
         return EVENT_HANDLED;
-    }
+    }*/
 
     // 2C: Turbo
     else if (event == EV_click2_press) {
