@@ -10,13 +10,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp
-    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
-        memorized_level = nearest_level((int16_t)actual_level + 1);
-        set_level_and_therm_target(memorized_level);
-        return EVENT_HANDLED;
-    }
-
     // 1 click (early): OFF
     else if (event == EV_click1_press) {
         set_level_and_therm_target(0);
@@ -34,6 +27,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 2C: Turbo
     else if (event == EV_click2_press) {
         set_level_and_therm_target(150);
+        return EVENT_HANDLED;
+    }
+
+    // 1H: Ramp
+    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK | B_PRESS)) {
+        memorized_level = nearest_level((int16_t)actual_level + 1);
+        set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
     }
 
