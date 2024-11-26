@@ -23,11 +23,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // Accept single click as valid event
-    else if (event == EV_click1_release) {
-        return EVENT_HANDLED;
-    }
-
     // 1C: OFF
     else if (event == EV_1click) {
         if (arg > HOLD_TIMEOUT) {
@@ -39,6 +34,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 2C: Turbo
     else if (event == EV_click2_press) {
         set_level_and_therm_target(150);
+        return EVENT_HANDLED;
+    }
+
+    // Accept single click as valid event
+    else if (event == EV_click1_release) {
         return EVENT_HANDLED;
     }
 
