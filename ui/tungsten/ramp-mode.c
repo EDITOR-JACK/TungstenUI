@@ -37,11 +37,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // Accept single click as valid event
-    else if (event == EV_click1_release) {
-        return EVENT_HANDLED;
-    }
-
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
         #ifdef THERM_HARD_TURBO_DROP
