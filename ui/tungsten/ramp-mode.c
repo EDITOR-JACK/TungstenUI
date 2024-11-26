@@ -23,12 +23,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // Click release during hold timeout: LOW
+    // Accept single click as valid event
     else if (event == EV_click1_release) {
-        if (arg < HOLD_TIMEOUT) {
-            memorized_level = 1;
-            set_level_and_therm_target(1);
-        }
         return EVENT_HANDLED;
     }
 
