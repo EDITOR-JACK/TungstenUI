@@ -21,7 +21,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // 1C: OFF
     else if (event == EV_1click) {
-        set_state(off_state, 0);
+        if (!ramp_now) {
+            set_state(off_state, 0);
+        }
         return EVENT_HANDLED;
     }
 
