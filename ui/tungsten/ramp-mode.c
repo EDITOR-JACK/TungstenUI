@@ -1,9 +1,9 @@
 #pragma once
 #include "anduril/ramp-mode.h"
 
-uint8_t steady_state(Event event, uint16_t arg) {
+uint8_t ramp_now = 1;
 
-    uint8_t ramp_now = 1;
+uint8_t steady_state(Event event, uint16_t arg) {  
 
     // Enter State
     if (event == EV_enter_state) {
