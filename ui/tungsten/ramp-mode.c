@@ -13,13 +13,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1 click (early): OFF
+    /* 1 click (early): OFF
     else if (event == EV_click1_press) {
         set_level_and_therm_target(0);
         return EVENT_HANDLED;
     }
 
-    /* 1C: OFF
+    // 1C: OFF
     else if (event == EV_1click) {
         if (!ramp_now) {
             set_state(off_state, 0);
