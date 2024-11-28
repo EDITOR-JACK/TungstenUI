@@ -27,8 +27,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }*/
 
-    // 1H: Ramp Enable
-    else if (event == EV_click1_hold) {
+    // 1H: Ramp Enable (if not already)
+    else if (event == EV_click1_hold && !ramp_now) {
         ramp_now = 1;
         return EVENT_HANDLED;
     }  
@@ -39,15 +39,15 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // button was released
-    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
+    // Stop ramping on release
+    else if (((event & (B_CLICK | B_PRESS)) == (B_CLICK)) && ramp_now) {
         ramp_now = 0;
         return EVENT_HANDLED;
     }
 
     // Ramping
     else if (event == EV_tick){
-        if (ramp_now && (arg % 2)) {
+        if (ramp_now) {
             memorized_level = nearest_level((int16_t)actual_level + 1);
             set_level_and_therm_target(memorized_level);
         }
