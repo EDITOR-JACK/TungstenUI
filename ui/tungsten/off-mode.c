@@ -32,7 +32,6 @@ uint8_t off_state(Event event, uint16_t arg) {
     // Click instantly enters ON state
     else if (event == EV_click1_press) {
         set_state(steady_state, 1);
-        empty_event_sequence();
         return EVENT_HANDLED;
     }
 

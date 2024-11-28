@@ -14,7 +14,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
 
     // button was released
-    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
+    else if (event == EV_click1_release) {
         ramp_now = 0;
         return EVENT_HANDLED;
     }
