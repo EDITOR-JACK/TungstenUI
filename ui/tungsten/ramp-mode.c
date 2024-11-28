@@ -13,8 +13,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // Release click: Stop ramping
-    else if (event == EV_click1_release) {
+    // button was released
+    else if ((event & (B_CLICK | B_PRESS)) == (B_CLICK)) {
         ramp_now = 0;
         return EVENT_HANDLED;
     }
