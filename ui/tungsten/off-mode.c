@@ -35,25 +35,5 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    /* 4C: Battcheck
-    else if (event == EV_4clicks) {
-        set_state(battcheck_state, 0);
-        return EVENT_HANDLED;
-    }
-
-    // 5C: Tempcheck
-    else if (event == EV_5clicks) {
-        set_state(tempcheck_state, 0);
-        return EVENT_HANDLED;
-    }
-
-    // 6C: Lockout
-    else if (event == EV_6clicks) {
-        rgb_led_update(0x20, 0); //Blip red AUX
-        set_state(lockout_state, 0);
-        return EVENT_HANDLED;
-    }
-    */
-
     return EVENT_NOT_HANDLED;
 }

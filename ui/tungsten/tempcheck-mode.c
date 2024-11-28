@@ -9,8 +9,8 @@ uint8_t tempcheck_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 5H: thermal config mode
-    else if (event == EV_click5_hold) {
+    // 1H: thermal config mode
+    else if (event == EV_click1_hold) {
         push_state(thermal_config_state, 0);
         return EVENT_HANDLED;
     }
