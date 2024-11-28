@@ -2,7 +2,7 @@
 #include "anduril/ramp-mode.h"
 
 uint8_t ramp_now = 1;
-uint8_t enable_off = 0;
+uint8_t off_ready = 0;
 
 uint8_t steady_state(Event event, uint16_t arg) {  
 
@@ -11,18 +11,19 @@ uint8_t steady_state(Event event, uint16_t arg) {
         memorized_level = arg;
         set_level_and_therm_target(arg);
         ramp_now = 1;
-        enable_off = 0;
+        off_ready = 0;
         return EVENT_HANDLED;
     }
 
     // 1 click (early): OFF
     else if (event == EV_click1_press) {
         set_level_and_therm_target(0);
+        off_ready = 1;
         return EVENT_HANDLED;
     }
 
     // 1C: OFF
-    else if (event == EV_1click && enable_off) {
+    else if (event == EV_1click && off_ready) {
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
@@ -42,7 +43,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // Stop ramping on release
     else if (((event & (B_CLICK | B_PRESS)) == (B_CLICK)) && ramp_now) {
         ramp_now = 0;
-        enable_off = 1;
         return EVENT_HANDLED;
     }
 
