@@ -47,7 +47,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
 
     // Ramping
-    else if (event == EV_tick){
+    else if (event == EV_tick && !(arg % 2)){
         if (ramp_now) {
             memorized_level = nearest_level((int16_t)actual_level + 1);
             set_level_and_therm_target(memorized_level);
