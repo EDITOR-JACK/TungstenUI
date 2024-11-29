@@ -3,7 +3,7 @@
 
 uint8_t ramp_now = 1;
 uint8_t off_ready = 0;
-uint8_t ramp_speed = 1;
+uint8_t ramp_spd = 1;
 
 uint8_t steady_state(Event event, uint16_t arg) {  
 
@@ -13,7 +13,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         set_level_and_therm_target(arg);
         ramp_now = 1;
         off_ready = 0;
-        ramp_speed = 1;
+        ramp_spd = 1;
         return EVENT_HANDLED;
     }
 
@@ -33,7 +33,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 1H: Ramp Enable (if not already)
     else if (event == EV_click1_hold && !ramp_now) {
         ramp_now = 1;
-        ramp_speed = 3;
+        ramp_spd = 3;
         return EVENT_HANDLED;
     }
 
@@ -52,7 +52,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // Ramping
     else if (event == EV_tick){
         if (ramp_now) {
-            if (arg % ramp_speed) {
+            if (arg % ramp_spd) {
                return EVENT_HANDLED; 
             }
             memorized_level = nearest_level((int16_t)actual_level + 1);
