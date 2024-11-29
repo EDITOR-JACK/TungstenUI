@@ -1,9 +1,8 @@
 #pragma once
 #include "anduril/ramp-mode.h"
 
-uint8_t ramp_now = 1;
+uint8_t ramp_start = 1;
 uint8_t off_ready = 0;
-uint8_t ramp_spd = 1;
 
 uint8_t steady_state(Event event, uint16_t arg) {  
 
@@ -11,9 +10,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) {
         memorized_level = arg;
         set_level_and_therm_target(arg);
-        ramp_now = 1;
+        ramp_start = 1;
         off_ready = 0;
-        ramp_spd = 1;
         return EVENT_HANDLED;
     }
 
@@ -30,10 +28,12 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp Enable (if not already)
-    else if (event == EV_click1_hold && !ramp_now) {
-        ramp_now = 1;
-        ramp_spd = 16;
+    // 1H: Ramp Again (slower)
+    else if (event == EV_click1_hold && !ramp_start) {
+        if (arg % 5)
+            return EVENT_HANDLED;
+        memorized_level = nearest_level((int16_t)actual_level + 1);
+        set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
     }
 
@@ -44,20 +44,16 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
 
     // Stop ramping on release
-    else if (((event & (B_CLICK | B_PRESS)) == (B_CLICK)) && ramp_now) {
-        ramp_now = 0;
+    else if (((event & (B_CLICK | B_PRESS)) == (B_CLICK)) && ramp_start) {
+        ramp_start = 0;
         return EVENT_HANDLED;
     }
 
     // Ramping
     else if (event == EV_tick){
-        if (ramp_now) {
-            if (arg % 16) {
-                return EVENT_HANDLED; 
-            } else {
-                memorized_level = nearest_level((int16_t)actual_level + 1);
-                set_level_and_therm_target(memorized_level);
-            }    
+        if (ramp_start) {
+            memorized_level = nearest_level((int16_t)actual_level + 1);
+            set_level_and_therm_target(memorized_level);  
         }
         return EVENT_HANDLED;
     }
