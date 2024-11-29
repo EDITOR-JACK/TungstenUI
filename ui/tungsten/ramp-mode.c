@@ -33,7 +33,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // 1H: Ramp Enable (if not already)
     else if (event == EV_click1_hold && !ramp_now) {
         ramp_now = 1;
-        ramp_speed_divider = 6; //slower ramping when already on
+        ramp_speed_divider = 16; //slower ramping when already on
         return EVENT_HANDLED;
     }
 
