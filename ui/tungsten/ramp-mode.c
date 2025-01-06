@@ -28,10 +28,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H: Ramp Again (slower)
+    // 1H: Ramp Again
     else if (event == EV_click1_hold && !ramp_start) {
-        if (arg % 5)
-            return EVENT_HANDLED;
         memorized_level = nearest_level((int16_t)actual_level + 1);
         set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
