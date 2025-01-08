@@ -208,7 +208,7 @@ void setup() {
 
         load_config();
 
-        push_state(off_state, 0);
+        push_state(off_state, 1);
 
     #else  // if START_AT_MEMORIZED_LEVEL
 
