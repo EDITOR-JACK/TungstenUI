@@ -2,7 +2,7 @@
 #include "anduril/ramp-mode.h"
 
 //Duration (in seconds) that light remains ON
-#define ON_DURATION 10
+#define ON_DURATION 7
 
 static int on_ticks = 0;
 
@@ -27,17 +27,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
-        //if (actual_level > THERM_FASTER_LEVEL) {
-        if (actual_level == MAX_LEVEL) {
-            #ifdef USE_SET_LEVEL_GRADUALLY
-            set_level_gradually(THERM_FASTER_LEVEL);
-            target_level = THERM_FASTER_LEVEL;
-            #else
-            set_level_and_therm_target(THERM_FASTER_LEVEL);
-            #endif
-        } else
         if (actual_level > MIN_THERM_STEPDOWN) {
-            int16_t stepdown = actual_level - arg;
+            int16_t stepdown = actual_level - (4*arg);
             if (stepdown < MIN_THERM_STEPDOWN) stepdown = MIN_THERM_STEPDOWN;
             else if (stepdown > MAX_LEVEL) stepdown = MAX_LEVEL;
             #ifdef USE_SET_LEVEL_GRADUALLY
