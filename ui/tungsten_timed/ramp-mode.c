@@ -27,10 +27,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
-        #if 0
-        blip();
-        #endif
-        #ifdef THERM_HARD_TURBO_DROP
         //if (actual_level > THERM_FASTER_LEVEL) {
         if (actual_level == MAX_LEVEL) {
             #ifdef USE_SET_LEVEL_GRADUALLY
@@ -40,7 +36,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
             set_level_and_therm_target(THERM_FASTER_LEVEL);
             #endif
         } else
-        #endif
         if (actual_level > MIN_THERM_STEPDOWN) {
             int16_t stepdown = actual_level - arg;
             if (stepdown < MIN_THERM_STEPDOWN) stepdown = MIN_THERM_STEPDOWN;
