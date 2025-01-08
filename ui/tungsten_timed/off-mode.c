@@ -34,7 +34,25 @@ uint8_t off_state(Event event, uint16_t arg) {
     // Click to ON
     else if (event == EV_click1_press && reset) {
         button_led_set(0);
+        set_level(150);
+        return EVENT_HANDLED;
+    }
+
+    // 1C
+    else if (event == EV_1click && reset) {
         set_state(steady_state, 150);
+        return EVENT_HANDLED;
+    }
+
+    // 5C: Tempcheck
+    else if (event == EV_5clicks) {
+        set_state(tempcheck_state, 0);
+        return EVENT_HANDLED;
+    }
+
+    // 6C: Lockout
+    else if (event == EV_6clicks) {
+        set_state(lockout_state, 0);
         return EVENT_HANDLED;
     }
 
