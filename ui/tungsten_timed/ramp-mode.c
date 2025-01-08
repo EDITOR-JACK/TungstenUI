@@ -20,7 +20,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         if (on_ticks > 62*ON_DURATION) {
             // OFF
             set_level_and_therm_target(0);
-            set_state(off_state, 0);
+            set_state(off_state, 1);
         }
         return EVENT_HANDLED;
     }
@@ -28,7 +28,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
 
-        int16_t stepdown = actual_level - (4*arg);
+        int16_t stepdown = actual_level - arg;
         set_level(stepdown);
 
         return EVENT_HANDLED;

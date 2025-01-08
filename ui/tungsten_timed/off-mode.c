@@ -12,11 +12,11 @@ uint8_t off_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) { 
         off_ticks = 0;
         if (arg == 1) {
-            reset = 1;
-            button_led_set(2);
-        } else {
             reset = 0;
             button_led_set(0);
+        } else {
+            reset = 1;
+            button_led_set(2); 
         }
         return EVENT_HANDLED;
     }

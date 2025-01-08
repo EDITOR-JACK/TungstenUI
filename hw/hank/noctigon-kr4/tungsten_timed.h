@@ -52,12 +52,12 @@
 #define THERM_CAL_OFFSET 5
 
 #undef DEFAULT_THERM_CEIL
-#define DEFAULT_THERM_CEIL 40
+#define DEFAULT_THERM_CEIL 30
 
 #undef THERM_NEXT_WARNING_THRESHOLD
 #define THERM_NEXT_WARNING_THRESHOLD 1 // 24 by default -> increase for fewer adjustments (more stable output on large time scale)
 #undef THERM_RESPONSE_MAGNITUDE
-#define THERM_RESPONSE_MAGNITUDE 64     // 64 by default -> decrease for smaller adjustments (removes dip post turbo)
+#define THERM_RESPONSE_MAGNITUDE 256     // 64 by default -> decrease for smaller adjustments (removes dip post turbo)
 
 // the power regulator is a bit slow, so push it harder for a quick response from off
 #define DEFAULT_JUMP_START_LEVEL 21
