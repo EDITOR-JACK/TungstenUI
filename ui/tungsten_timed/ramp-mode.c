@@ -11,7 +11,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // ON
     if (event == EV_enter_state) {
         on_ticks = 0;
-        set_level_and_therm_target(150);
+        set_level_and_therm_target(arg);
         return EVENT_HANDLED;
     }
 
@@ -25,25 +25,18 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // overheating: drop by an amount proportional to how far we are above the ceiling
-    else if (event == EV_temperature_high) {
-
-        int16_t stepdown = actual_level - arg;
-        set_level(stepdown);
-
-        return EVENT_HANDLED;
-    }
     // underheating: increase slowly if we're lower than the target
     //               (proportional to how low we are)
     else if (event == EV_temperature_low) {
-        #if 0
-        blip();
-        #endif
         if (actual_level < target_level) {
             int16_t stepup = actual_level + arg;
             if (stepup > target_level) stepup = target_level;
             else if (stepup < MIN_THERM_STEPDOWN) stepup = MIN_THERM_STEPDOWN;
+            #ifdef USE_SET_LEVEL_GRADUALLY
+            set_level_gradually(stepup);
+            #else
             set_level(stepup);
+            #endif
         }
         return EVENT_HANDLED;
     }

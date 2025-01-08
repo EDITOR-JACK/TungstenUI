@@ -2,15 +2,17 @@
 #include "anduril/off-mode.h"
 
 //Duration (in seconds) that light remains OFF
-#define OFF_DURATION 30
+#define OFF_DURATION 10
 
 static int reset = 0;
 static int off_ticks = 0;
+static int starting_level = 150;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) { 
         off_ticks = 0;
+        starting_level = 150;
         if (arg == 1) {
             reset = 0;
             button_led_set(0);
@@ -23,6 +25,11 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     else if (event == EV_tick) {
         off_ticks++;
+        if (temperature > 35) {
+            starting_level = 100;
+        } else {
+            starting_level = 150;
+        }
         if (off_ticks > 62*OFF_DURATION && !reset) {
             // RESET
             reset = 1;
@@ -34,13 +41,13 @@ uint8_t off_state(Event event, uint16_t arg) {
     // Click to ON
     else if (event == EV_click1_press && reset) {
         button_led_set(0);
-        set_level(150);
+        set_level(starting_level);
         return EVENT_HANDLED;
     }
 
     // 1C
     else if (event == EV_1click && reset) {
-        set_state(steady_state, 150);
+        set_state(steady_state, starting_level);
         return EVENT_HANDLED;
     }
 
