@@ -9,16 +9,21 @@ static int off_ticks = 0;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
-    if (event == EV_enter_state) {     
-        reset = 0;
+    if (event == EV_enter_state) { 
         off_ticks = 0;
-        button_led_set(0);
+        if (arg == 1) {
+            reset = 1;
+            button_led_set(2);
+        } else {
+            reset = 0;
+            button_led_set(0);
+        }
         return EVENT_HANDLED;
     }
 
     else if (event == EV_tick) {
         off_ticks++;
-        if (off_ticks > 62*OFF_DURATION) {
+        if (off_ticks > 62*OFF_DURATION && !reset) {
             // RESET
             reset = 1;
             button_led_set(2);

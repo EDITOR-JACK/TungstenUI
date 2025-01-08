@@ -52,7 +52,7 @@
 #define THERM_CAL_OFFSET 5
 
 #undef DEFAULT_THERM_CEIL
-#define DEFAULT_THERM_CEIL 60
+#define DEFAULT_THERM_CEIL 40
 
 // the power regulator is a bit slow, so push it harder for a quick response from off
 #define DEFAULT_JUMP_START_LEVEL 21
