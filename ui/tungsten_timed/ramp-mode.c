@@ -4,16 +4,20 @@
 //Duration (in seconds) that light remains ON
 #define ON_DURATION 3
 
+static int on_ticks = 0;
+
 uint8_t steady_state(Event event, uint16_t arg) {
 
     // ON
     if (event == EV_enter_state) {
+        on_ticks = 0;
         set_level_and_therm_target(150);
         return EVENT_HANDLED;
     }
 
     else if (event == EV_tick) {
-        if (arg > 62*ON_DURATION) {
+        on_ticks++;
+        if (on_ticks > 62*ON_DURATION) {
             // OFF
             set_level_and_therm_target(0);
             set_state(off_state, 0);

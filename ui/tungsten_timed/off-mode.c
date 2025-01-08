@@ -5,17 +5,20 @@
 #define OFF_DURATION 5
 
 static int reset = 0;
+static int off_ticks = 0;
 
 uint8_t off_state(Event event, uint16_t arg) {
 
     if (event == EV_enter_state) {     
         reset = 0;
+        off_ticks = 0;
         button_led_set(0);
         return EVENT_HANDLED;
     }
 
     else if (event == EV_tick) {
-        if (arg > 62*OFF_DURATION) {
+        off_ticks++;
+        if (off_ticks > 62*OFF_DURATION) {
             // RESET
             reset = 1;
             button_led_set(2);
