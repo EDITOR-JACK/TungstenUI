@@ -2,7 +2,7 @@
 #include "anduril/ramp-mode.h"
 
 //Duration (in seconds) that light remains ON
-#define ON_DURATION 3
+#define ON_DURATION 10
 
 static int on_ticks = 0;
 
