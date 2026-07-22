@@ -19,7 +19,7 @@ function main {
     fi
 
     # TODO: detect UI from $0 and/or $*
-    UI=anduril
+    UI=tungsten
 
     mkdir -p hex
 
