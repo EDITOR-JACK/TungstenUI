@@ -1,35 +1,4 @@
-// TUNGSTEN - TODO sort this file out.
-
-/*
- * Usually a program would be structured like this...
- * - Library headers
- * - App headers
- * - App code
- *
- * ... in each source file.
- * ... and each library and part of the program would be linked together.
- *
- * But this doesn't follow that pattern, because it's using the
- *   -fwhole-program
- * flag to reduce the compiled size.  It lets us fit more features
- * in a tiny MCU chip's ROM.
- *
- * So the structure is like this instead...
- * - App-level configuration headers
- *   - Default config
- *   - Per build target config
- * - Library-level configuration headers
- * - Library code (FSM itself)
- * - App headers
- * - App code (all of it, inline)
- *
- * Don't do this in regular programs.  It's weird and kind of gross.
- * But in this case it gives us a bunch of much-needed space, so... woot.
- *
- * Also, there are a ton of compile-time options because it needs to build
- * a bunch of different versions and each one needs to be trimmed as small
- * as possible.  These are mostly "USE" flags.
- */
+// TUNGSTEN - TODO sort this file out
 
 /********* load up MCU info, like ROM size and such *********/
 #include "arch/mcu.h"
@@ -246,12 +215,7 @@ void setup() {
         // regular e-switch light, no hard clicky power button
 
         // blink at power-on to let user know power is connected
-        blink_once();
-
-        #ifdef USE_FACTORY_RESET
-        if (button_is_pressed())
-            factory_reset();
-        #endif
+        // blink_once();
 
         load_config();
 
