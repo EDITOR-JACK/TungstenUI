@@ -132,7 +132,7 @@
 // (is a bit weird to do things this way,
 //  but it saves a lot of space by letting us use the -fwhole-program flag)
 
-#include "anduril/off-mode.c"
+#include "tungsten/off-mode.c"
 #include "anduril/ramp-mode.c"
 #include "anduril/load-save-config.c"
 #include "anduril/config-mode.c"
