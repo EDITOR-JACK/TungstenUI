@@ -7,6 +7,9 @@ uint8_t LVLS[3] = { 2, 30, 70};
 //Transition fade timing (higher = slower)
 uint8_t FadeTime = 8;
 
+// set level smooth maybe
+void off_state_set_level(uint8_t level);
+
 uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
@@ -47,7 +50,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 1H -> Moonlight
     // (Stay off until hold timing complete, then come on at moonlight level)
     else if (event == EV_click1_hold) {
-        set_level_smooth(LVLS[0], FadeTime);
+        off_state_set_level(LVLS[0]);
         return EVENT_HANDLED;
     }
 
@@ -62,7 +65,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 1C -> LOW
     // (start transition to LOW level if first click not held)
     else if (event == EV_click1_release) {
-        set_level_smooth(LVLS[1], FadeTime);
+        off_state_set_level(LVLS[1]);
         return EVENT_HANDLED;
     }
 
@@ -79,7 +82,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     else if (event == EV_click2_press) {
         // immediately cancel any animations in progress
         smooth_steps_in_progress = 0;
-        set_level_smooth(LVLS[2], FadeTime);
+        off_state_set_level(LVLS[2]);
         return EVENT_HANDLED;
     }
 
@@ -100,4 +103,13 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
 
     return EVENT_NOT_HANDLED;
+}
+
+void off_state_set_level(uint8_t level) {
+    // this pattern gets used a few times, so reduce duplication
+    #ifdef USE_SMOOTH_STEPS
+        if (cfg.smooth_steps_style) set_level_smooth(level, FadeTime);
+        else
+    #endif
+    set_level(level);
 }
