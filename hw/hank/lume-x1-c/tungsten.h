@@ -31,3 +31,14 @@
 #ifdef SIMPLE_UI_STEPS
 #undef SIMPLE_UI_STEPS
 #endif
+
+// blink numbers on the green aux channel
+#ifdef DEFAULT_BLINK_CHANNEL
+#undef DEFAULT_BLINK_CHANNEL
+#endif
+#define DEFAULT_BLINK_CHANNEL  CM_AUXGRN
+
+#ifdef RGB_LED_OFF_DEFAULT
+#undef RGB_LED_OFF_DEFAULT
+#endif
+#define RGB_LED_OFF_DEFAULT     0x00
