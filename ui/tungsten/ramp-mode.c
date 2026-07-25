@@ -3,7 +3,7 @@
 
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
-    ramp_speed = 2;
+    ramp_speed = 1;
     bool turbo_held = false;
 
     // Enter State
@@ -14,8 +14,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1C -> OFF
-    else if (event == EV_1click) {
+    // 1C -> OFF (or when momentary turbo from OFF is released)
+    else if ((event == EV_1click) || ((event == EV_release) && (memorized_level == MAX_LEVEL))) {
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
