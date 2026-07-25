@@ -2,12 +2,10 @@
 #include "anduril/off-mode.h"
 
 //Preset levels for Moonlight, Low, High
-uint8_t LVLS[3] = { 2, 30, 70};
+uint8_t LVLS[3] = { 3, 40, 80};
 
 //Transition fade timing (higher = slower)
 uint8_t FadeTime = 8;
-
-bool moonlightHeld = false;
 
 // set level smooth maybe
 void off_state_set_level(uint8_t level);
@@ -52,8 +50,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 1H -> Moonlight
     // (Stay off until hold timing complete, then come on at moonlight level)
-    else if ((event == EV_click1_hold) && (!moonlightHeld)) {
-        moonlightHeld = true;
+    else if (event == EV_click1_hold) {
         off_state_set_level(LVLS[0]);
         return EVENT_HANDLED;
     }
