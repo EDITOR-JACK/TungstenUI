@@ -58,7 +58,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // ------- Actions for NORMAL (LOW/HIGH) MODES -------
 
     // 1H -> TURBO
-    else if (event == EV_click1_hold_press) {
+    else if (event == EV_click1_hold) {
         set_level_and_therm_target(MAX_LEVEL);
         return EVENT_HANDLED;
     }
