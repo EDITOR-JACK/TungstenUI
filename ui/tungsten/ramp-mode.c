@@ -4,6 +4,7 @@
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     ramp_speed = 2;
+    bool turbo_held = false;
 
     // Enter State
     if (event == EV_enter_state) {
@@ -58,11 +59,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
     // ------- Actions for NORMAL (LOW/HIGH) MODES -------
 
     // 1H -> TURBO
-    else if (event == EV_click1_hold) {
+    else if ((event == EV_click1_hold) && !turbo_held) {
+        turbo_held = true;
         set_level_and_therm_target(MAX_LEVEL);
         return EVENT_HANDLED;
     }
     else if (event == EV_click1_hold_release) {
+        turbo_held = false;
         set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
     }
@@ -192,6 +195,17 @@ uint8_t nearest_level(int16_t target) {
     if (target > mode_max) return mode_max;
 
     return target;
+}
+
+// ensure ramp globals are correct
+void ramp_update_config() {
+    uint8_t which = cfg.ramp_style;
+    #ifdef USE_SIMPLE_UI
+    if (cfg.simple_ui_active) { which = 2; }
+    #endif
+
+    ramp_floor = cfg.ramp_floors[which];
+    ramp_ceil  = cfg.ramp_ceils[which];
 }
 
 #if defined(USE_THERMAL_REGULATION) || defined(USE_SMOOTH_STEPS)
