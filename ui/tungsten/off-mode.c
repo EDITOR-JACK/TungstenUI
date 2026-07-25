@@ -16,6 +16,12 @@ uint8_t off_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) {
         // turn off
         set_level_smooth(0, FadeTime);
+        // Update aux LEDs now to avoid waiting for sleep
+        #ifdef USE_INDICATOR_LED
+        indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
+        #elif defined(USE_AUX_RGB_LEDS)
+        rgb_led_update(cfg.rgb_led_off_mode, arg);
+        #endif
         // don't go to sleep while animating
         arg |= smooth_steps_in_progress;
         ticks_since_on = 0;
