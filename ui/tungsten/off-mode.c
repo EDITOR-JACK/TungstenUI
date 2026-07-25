@@ -2,7 +2,7 @@
 #include "anduril/off-mode.h"
 
 //Preset levels for Moonlight, Low, High
-uint8_t LVLS[3] = { 3, 40, 80};
+uint8_t LVLS[3] = { 5, 40, 90};
 
 //Transition fade timing (higher = slower)
 uint8_t FadeTime = 8;

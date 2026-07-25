@@ -3,7 +3,6 @@
 
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
-    ramp_speed = 1;
     bool turbo_held = false;
 
     // Enter State
@@ -27,7 +26,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         if (((event == EV_click1_hold) || (event == EV_click2_hold))) {
 
             // ramp slower
-            if (arg % ramp_speed)
+            if (arg % 2)
                 return EVENT_HANDLED;
 
             // set ramp direction on first frame
