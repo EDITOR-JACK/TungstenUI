@@ -14,7 +14,6 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
     if (event == EV_enter_state) {
-        moonlightHeld = false;
         // turn off
         set_level_smooth(0, FadeTime);
         // don't go to sleep while animating
