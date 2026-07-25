@@ -15,7 +15,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     }
 
     // 1C -> OFF (or when momentary turbo from OFF is released)
-    else if ((event == EV_1click) || ((event == EV_release) && (memorized_level == MAX_LEVEL))) {
+    else if ((event == EV_1click) || ((event == EV_click2_hold_release) && (memorized_level == MAX_LEVEL))) {
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
@@ -29,16 +29,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
             // ramp slower
             if (arg % ramp_speed)
                 return EVENT_HANDLED;
-            
-            #ifdef USE_SMOOTH_STEPS
-                // if a brightness transition is already happening, don't interrupt it
-                if (smooth_steps_in_progress) return EVENT_HANDLED;
-            #endif
 
-            // fix ramp direction on first frame if necessary
+            // set ramp direction on first frame
             if (!arg) {
-                // click, hold should go down
-                if (event == EV_click2_hold) { ramp_direction = -1; }
+                if (event == EV_click1_hold) { ramp_direction = 1; }
+                else { ramp_direction = -1; }
             }
 
             memorized_level = nearest_level((int16_t)actual_level + ramp_direction);

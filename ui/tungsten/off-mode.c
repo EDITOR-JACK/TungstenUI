@@ -7,6 +7,8 @@ uint8_t LVLS[3] = { 2, 30, 70};
 //Transition fade timing (higher = slower)
 uint8_t FadeTime = 8;
 
+bool moonlightHeld = false;
+
 // set level smooth maybe
 void off_state_set_level(uint8_t level);
 
@@ -14,6 +16,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
     if (event == EV_enter_state) {
+        moonlightHeld = false;
         // turn off
         set_level_smooth(0, FadeTime);
         // don't go to sleep while animating
@@ -49,17 +52,17 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 1H -> Moonlight
     // (Stay off until hold timing complete, then come on at moonlight level)
-    else if (event == EV_click1_hold) {
-        //off_state_set_level(LVLS[0]);
-        set_state(steady_state, LVLS[0]);
+    else if ((event == EV_click1_hold) && (!moonlightHeld)) {
+        moonlightHeld = true;
+        off_state_set_level(LVLS[0]);
         return EVENT_HANDLED;
     }
 
     // (Releasing will now enter steady state in moonlight mode)
-    /*else if (event == EV_click1_hold_release) {
+    else if (event == EV_click1_hold_release) {
         set_state(steady_state, LVLS[0]);
         return EVENT_HANDLED;
-    }*/
+    }
 
 
 
