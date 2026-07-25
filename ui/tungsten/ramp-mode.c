@@ -45,8 +45,8 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // 3C -> AUX toggle (LOW RED)
         else if (event == EV_click3_press) {
             if (cfg.rgb_led_off_mode == 0x00) {
-                //Set RGB AUX config to LOW (0x10) and RED (0x01)
-                cfg.rgb_led_off_mode = 0x11;
+                //Set RGB AUX config to LOW (0x1_) and RED (0x_0)
+                cfg.rgb_led_off_mode = 0x10;
             } else {
                 //Set RGB AUX config to OFF (0x00)
                 cfg.rgb_led_off_mode = 0x00;
