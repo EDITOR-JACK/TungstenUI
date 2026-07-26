@@ -77,9 +77,10 @@ uint8_t steady_state(Event event, uint16_t arg) {
             return EVENT_HANDLED;
         }
 
-        // 6C -> Temperature Readout
+        // 6C -> Red Moon Toggle
         else if (event == EV_6clicks) {
             redMoon = !redMoon;
+            set_state(steady_state, LVLS[0]);
             return EVENT_HANDLED;
         }
     }
