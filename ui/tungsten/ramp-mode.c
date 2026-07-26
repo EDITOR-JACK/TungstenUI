@@ -7,6 +7,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // Enter State
     if (event == EV_enter_state) {
+        overheat = false;
         memorized_level = arg;
         set_level_and_therm_target(arg);
         ramp_direction = 1;
@@ -134,6 +135,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
     // overheating: drop by an amount proportional to how far we are above the ceiling
     else if (event == EV_temperature_high) {
+        overheat = true;
         #if 0
         blip();
         #endif

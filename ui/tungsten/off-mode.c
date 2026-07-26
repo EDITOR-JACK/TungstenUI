@@ -7,6 +7,9 @@ uint8_t LVLS[3] = { 5, 40, 90};
 //Transition fade timing (higher = slower)
 uint8_t FadeTime = 8;
 
+//Was thermal throttling required on last activation?
+bool overheat = false;
+
 // set level smooth maybe
 void off_state_set_level(uint8_t level);
 
@@ -50,6 +53,11 @@ uint8_t off_state(Event event, uint16_t arg) {
             indicator_led_update(3, arg);
             #elif defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x30, arg);
+            #endif
+        } else if (overheat && (arg <= 6)) {
+            //Blink AUX Blue for 3 seconds
+            #if defined(USE_AUX_RGB_LEDS)
+            rgb_led_update(0x34, arg);
             #endif
         } else {
             // use configured AUX settings

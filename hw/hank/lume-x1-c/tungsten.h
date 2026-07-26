@@ -32,6 +32,10 @@
 #undef SIMPLE_UI_STEPS
 #endif
 
+#ifdef USE_EXTRA_BATTCHECK_DIGIT
+#undef USE_EXTRA_BATTCHECK_DIGIT
+#endif
+
 // blink numbers on the green aux channel
 #define DEFAULT_BLINK_CHANNEL  CM_AUXGRN
 
