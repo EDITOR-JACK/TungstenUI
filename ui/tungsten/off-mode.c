@@ -5,7 +5,7 @@
 uint8_t LVLS[3] = { 5, 40, 90};
 
 // Transition fade timing (higher = slower)
-uint8_t FadeTime = 6;
+uint8_t FadeTime = 5;
 
 // Was thermal throttling required on last activation?
 bool overheat = false;
