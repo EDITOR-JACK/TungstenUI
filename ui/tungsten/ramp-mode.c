@@ -43,7 +43,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         }
 
         // 3C -> AUX toggle (LOW RED)
-        else if (event == EV_click3_press) {
+        else if (event == EV_3clicks) {
             if (cfg.rgb_led_off_mode == 0x00) {
                 //Set RGB AUX config to LOW (0x1_) and RED (0x_0)
                 cfg.rgb_led_off_mode = 0x10;
@@ -53,6 +53,20 @@ uint8_t steady_state(Event event, uint16_t arg) {
             }
             save_config();
             set_state(off_state, 0);
+            return EVENT_HANDLED;
+        }
+
+        // 4C -> Voltage Readout
+        else if (event == EV_4clicks) {
+            set_level_and_therm_target(0);
+            set_state(battcheck_state, 0);
+            return EVENT_HANDLED;
+        }
+
+        // 5C -> Temperature Readout
+        else if (event == EV_5clicks) {
+            set_level_and_therm_target(0);
+            set_state(tempcheck_state, 0);
             return EVENT_HANDLED;
         }
     }

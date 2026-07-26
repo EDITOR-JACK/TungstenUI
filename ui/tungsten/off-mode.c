@@ -15,7 +15,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     // turn emitter off when entering state
     if (event == EV_enter_state) {
         // turn off
-        set_level_smooth(0, FadeTime);
+        off_state_set_level(0);
         // Update aux LEDs now to avoid waiting for sleep
         #ifdef USE_INDICATOR_LED
         indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
