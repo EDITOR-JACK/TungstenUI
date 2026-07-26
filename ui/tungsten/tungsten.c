@@ -151,7 +151,7 @@
 #endif
 
 #ifdef USE_BATTCHECK_MODE
-#include "anduril/battcheck-mode.c"
+#include "tungsten/battcheck-mode.c"
 #endif
 
 #ifdef USE_BEACON_MODE
@@ -163,7 +163,7 @@
 #endif
 
 #ifdef USE_THERMAL_REGULATION
-#include "anduril/tempcheck-mode.c"
+#include "tungsten/tempcheck-mode.c"
 #endif
 
 #ifdef USE_LOCKOUT_MODE

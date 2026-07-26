@@ -58,14 +58,12 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
         // 4C -> Voltage Readout
         else if (event == EV_4clicks) {
-            set_level_and_therm_target(0);
             set_state(battcheck_state, 0);
             return EVENT_HANDLED;
         }
 
         // 5C -> Temperature Readout
         else if (event == EV_5clicks) {
-            set_level_and_therm_target(0);
             set_state(tempcheck_state, 0);
             return EVENT_HANDLED;
         }
