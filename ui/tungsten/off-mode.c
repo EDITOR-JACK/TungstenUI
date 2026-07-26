@@ -1,16 +1,19 @@
 #pragma once
 #include "anduril/off-mode.h"
 
-//Preset levels for Moonlight, Low, High
+// Preset levels for Moonlight, Low, High
 uint8_t LVLS[3] = { 5, 40, 90};
 
-//Transition fade timing (higher = slower)
+// Transition fade timing (higher = slower)
 uint8_t FadeTime = 8;
 
-//Was thermal throttling required on last activation?
+// Was thermal throttling required on last activation?
 bool overheat = false;
 
-// set level smooth maybe
+// Use RED channel instead of Moonlight?
+bool redMoon = false;
+
+// Set level smooth maybe
 void off_state_set_level(uint8_t level);
 
 uint8_t off_state(Event event, uint16_t arg) {
@@ -47,19 +50,21 @@ uint8_t off_state(Event event, uint16_t arg) {
         if (ticks_since_on < 255) ticks_since_on ++;
 
         // Voltage low, not critical (for Lithium only)
-        if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 64)) {
-            //Blink AUX Red (or indicator LED)
+        if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 40)) {
+            // Blink AUX Red (or indicator LED) for 5 seconds
             #ifdef USE_INDICATOR_LED
             indicator_led_update(3, arg);
             #elif defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x30, arg);
             #endif
-        } else if (overheat && (arg <= 32)) {
-            //Blink AUX Blue
+        } 
+        /*else if (overheat && (arg <= 6)) {
+            // Blink AUX Blue
             #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x34, arg);
             #endif
-        } else {
+        } */
+        else {
             // use configured AUX settings
             #ifdef USE_INDICATOR_LED
             indicator_led_update(cfg.indicator_led_mode & 0x03, arg);

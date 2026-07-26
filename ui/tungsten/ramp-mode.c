@@ -5,6 +5,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     bool turbo_held = false;
 
+    // Use RED channel instead of Moonlight?
+    if (arg == LVLS[0] && redMoon) {
+        channel_mode = 1;
+    } else {
+        channel_mode = 0;
+    }
+    
     // Enter State
     if (event == EV_enter_state) {
         overheat = false;
@@ -66,6 +73,12 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // 5C -> Temperature Readout
         else if (event == EV_5clicks) {
             set_state(tempcheck_state, 0);
+            return EVENT_HANDLED;
+        }
+
+        // 6C -> Temperature Readout
+        else if (event == EV_6clicks) {
+            redMoon = !redMoon;
             return EVENT_HANDLED;
         }
     }
