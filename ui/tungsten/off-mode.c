@@ -47,15 +47,15 @@ uint8_t off_state(Event event, uint16_t arg) {
         if (ticks_since_on < 255) ticks_since_on ++;
 
         // Voltage low, not critical (for Lithium only)
-        if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 10)) {
-            //Blink AUX Red (or indicator LED) for 5 seconds
+        if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 16)) {
+            //Blink AUX Red (or indicator LED) for 8 seconds
             #ifdef USE_INDICATOR_LED
             indicator_led_update(3, arg);
             #elif defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x30, arg);
             #endif
-        } else if (overheat && (arg <= 10)) {
-            //Blink AUX Blue for 5 seconds
+        } else if (overheat && (arg <= 16)) {
+            //Blink AUX Blue for 8 seconds
             #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x34, arg);
             #endif
