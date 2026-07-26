@@ -131,31 +131,6 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
     // always preview in high mode
     if (setting_rgb_mode_now) { pattern = 2; }
 
-    #ifdef USE_POST_OFF_VOLTAGE
-    // use voltage high mode for a few seconds after initial poweroff
-    // (but not after changing aux LED settings and other similar actions)
-    else if ((arg < (cfg.post_off_voltage * SLEEP_TICKS_PER_SECOND))
-          && (ticks_since_on < (cfg.post_off_voltage * SLEEP_TICKS_PER_SECOND))
-          && (ticks_since_on > 0)  // don't blink red on 1st frame
-        ) {
-        // use high mode if regular aux level is high or prev level was high
-        #ifdef USE_AUX_THRESHOLD_CONFIG
-            // always high if configured for high aux
-            // otherwise 0/1/2 depending on recent main LED brightness
-            // (using >= makes it off by 1, but allows POVD at boot time)
-            if (pattern != 2)
-                pattern = (prev_level >= cfg.button_led_low_ramp_level)
-                    << (prev_level > cfg.button_led_high_ramp_level);
-        #else
-            pattern = 1
-                + ((2 == pattern)
-                   | (prev_level >= POST_OFF_VOLTAGE_BRIGHTNESS));
-        #endif
-        // voltage mode
-        color = RGB_LED_NUM_COLORS - 1;
-    }
-    #endif
-
     const uint8_t *colors = rgb_led_colors + 1;
     uint8_t actual_color = 0;
 

@@ -5,10 +5,13 @@
 uint8_t LVLS[3] = { 5, 40, 90};
 
 // Transition fade timing (higher = slower)
-uint8_t FadeTime = 8;
+uint8_t FadeTime = 6;
 
 // Was thermal throttling required on last activation?
 bool overheat = false;
+
+// Was RED moonlight mode just active?
+bool redMoon = false;
 
 // Set level smooth maybe
 void off_state_set_level(uint8_t level);
@@ -17,28 +20,21 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
     if (event == EV_enter_state) {
-        
-        // Update aux LEDs now to avoid waiting for sleep
-        #ifdef USE_INDICATOR_LED
-        indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
-        #elif defined(USE_AUX_RGB_LEDS)
-        rgb_led_update(cfg.rgb_led_off_mode, arg);
-        #endif
 
-        if (cfg.channel_mode == 1) {
+        if (redMoon) {
            // Turn off immediately 
            set_level(0);
         } else {
             // Turn off smoothly
             off_state_set_level(0);
         }
+
+        redMoon = false;
         
         // don't go to sleep while animating
         arg |= smooth_steps_in_progress;
-        ticks_since_on = 0;
-        // sleep while off  (lower power use)
-        // (unless delay requested; give the ADC some time to catch up)
         if (! arg) { 
+            // Sleep
             go_to_standby = 1; 
             // Reset channel mode
             channel_mode = 0;
@@ -56,7 +52,6 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // blink the indicator LED, maybe
     else if (event == EV_sleep_tick) {
-        if (ticks_since_on < 255) ticks_since_on ++;
 
         // Voltage low, not critical (for Lithium only)
         if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 40)) {
@@ -92,6 +87,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     else if (event == EV_click1_hold) {
         if (cfg.channel_mode == 1) {
             channel_mode = 1;
+            redMoon = true;
             off_state_set_level(MAX_LEVEL);
         } else {
             off_state_set_level(LVLS[0]);
