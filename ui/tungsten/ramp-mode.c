@@ -81,7 +81,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         else if (event == EV_6clicks) {
             cfg.channel_mode = (cfg.channel_mode == 0) ? 1 : 0;
             save_config();
-            set_level_and_therm_target(0);
+            set_level(0);
             set_state(steady_state, LVLS[0]);
             return EVENT_HANDLED;
         }

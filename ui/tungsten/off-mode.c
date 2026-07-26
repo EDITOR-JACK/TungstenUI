@@ -17,14 +17,22 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // turn emitter off when entering state
     if (event == EV_enter_state) {
-        // Turn off
-        off_state_set_level(0);
+        
         // Update aux LEDs now to avoid waiting for sleep
         #ifdef USE_INDICATOR_LED
         indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
         #elif defined(USE_AUX_RGB_LEDS)
         rgb_led_update(cfg.rgb_led_off_mode, arg);
         #endif
+
+        if (cfg.channel_mode == 1) {
+           // Turn off immediately 
+           set_level(0);
+        } else {
+            // Turn off smoothly
+            off_state_set_level(0);
+        }
+        
         // don't go to sleep while animating
         arg |= smooth_steps_in_progress;
         ticks_since_on = 0;
