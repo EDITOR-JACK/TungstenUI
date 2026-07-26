@@ -200,7 +200,7 @@
 
 #ifdef USE_AUX_RGB_ADV
 #include "pheripherals/aw2016/aw2016.c"
-#include "anduril/aux-leds-adv.c"
+#include "tungsten/aux-leds-adv.c"
 #endif
 
 // runs one time at boot, when power is connected

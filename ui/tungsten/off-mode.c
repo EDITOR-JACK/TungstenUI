@@ -42,12 +42,24 @@ uint8_t off_state(Event event, uint16_t arg) {
     // blink the indicator LED, maybe
     else if (event == EV_sleep_tick) {
         if (ticks_since_on < 255) ticks_since_on ++;
-        #ifdef USE_INDICATOR_LED
-        indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
-        #elif defined(USE_AUX_RGB_LEDS)
-        rgb_led_update(cfg.rgb_led_off_mode, arg);
-        #endif
 
+        // Voltage low, not critical (for Lithium only)
+        if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 10)) {
+            //Blink AUX Red (or indicator LED) for 5 seconds
+            #ifdef USE_INDICATOR_LED
+            indicator_led_update(3, arg);
+            #elif defined(USE_AUX_RGB_LEDS)
+            rgb_led_update(0x30, arg);
+            #endif
+        } else {
+            // use configured AUX settings
+            #ifdef USE_INDICATOR_LED
+            indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
+            #elif defined(USE_AUX_RGB_LEDS)
+            rgb_led_update(cfg.rgb_led_off_mode, arg);
+            #endif
+        }
+        
         return EVENT_HANDLED;
     }
 
