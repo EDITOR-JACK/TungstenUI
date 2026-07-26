@@ -45,7 +45,7 @@ void indicator_led_update(uint8_t mode, uint8_t tick) {
         #else
 
         // fancy blink, set off/low/high levels here:
-        static const uint8_t seq[] = {1, 2, 1, 0, 0, 0};
+        static const uint8_t seq[] = {2, 1, 0, 0};
         indicator_led(seq[tick & 15]);
 
         #endif  // ifdef USE_OLD_BLINKING_INDICATOR
@@ -211,7 +211,7 @@ void rgb_led_update(uint8_t mode, uint16_t arg) {
     // pick a brightness from the animation sequence
     if (pattern == 3) {
         // uses an odd length to avoid lining up with rainbow loop
-        static const uint8_t animation[] = {1, 2, 1, 0, 0, 0};
+        static const uint8_t animation[] = {2, 1, 0, 0};
         frame = (frame + 1) % sizeof(animation);
         pattern = animation[frame];
     }

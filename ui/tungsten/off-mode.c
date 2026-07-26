@@ -54,8 +54,8 @@ uint8_t off_state(Event event, uint16_t arg) {
             #elif defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x30, arg);
             #endif
-        } else if (overheat && (arg <= 6)) {
-            //Blink AUX Blue for 3 seconds
+        } else if (overheat && (arg <= 10)) {
+            //Blink AUX Blue for 5 seconds
             #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x34, arg);
             #endif
