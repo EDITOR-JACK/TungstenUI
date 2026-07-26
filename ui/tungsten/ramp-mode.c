@@ -4,20 +4,21 @@
 uint8_t steady_state(Event event, uint16_t arg) {
     static int8_t ramp_direction = 1;
     bool turbo_held = false;
-
-    // Use RED channel instead of Moonlight?
-    if (arg == LVLS[0] && redMoon) {
-        channel_mode = 1;
-    } else {
-        channel_mode = 0;
-    }
     
     // Enter State
     if (event == EV_enter_state) {
         overheat = false;
-        memorized_level = arg;
-        set_level_and_therm_target(arg);
         ramp_direction = 1;
+        memorized_level = arg;
+        // Use RED channel instead of Moonlight?
+        if (arg == LVLS[0] && redMoon) {
+            channel_mode = 1;
+            set_level_and_therm_target(MAX_LEVEL);
+        } else {
+            channel_mode = 0;  
+            set_level_and_therm_target(arg);
+        }
+        
         return EVENT_HANDLED;
     }
 
@@ -31,7 +32,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     if (memorized_level < LVLS[1]) {
 
         // 1H/2H (Moonlight) -> Change Brightness
-        if (((event == EV_click1_hold) || (event == EV_click2_hold))) {
+        if (((event == EV_click1_hold) || (event == EV_click2_hold)) && !redMoon) {
 
             // ramp slower
             if (arg % 2)

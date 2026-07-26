@@ -81,7 +81,13 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 1H -> Moonlight
     // (Stay off until hold timing complete, then come on at moonlight level)
     else if (event == EV_click1_hold) {
-        off_state_set_level(LVLS[0]);
+        if (redMoon) {
+            channel_mode = 1;
+            off_state_set_level(MAX_LEVEL);
+        } else {
+            channel_mode = 0;
+            off_state_set_level(LVLS[0]);
+        }
         return EVENT_HANDLED;
     }
 
