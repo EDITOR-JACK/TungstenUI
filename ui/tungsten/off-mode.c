@@ -10,9 +10,6 @@ uint8_t FadeTime = 8;
 // Was thermal throttling required on last activation?
 bool overheat = false;
 
-// Use RED channel instead of Moonlight?
-bool redMoon = false;
-
 // Set level smooth maybe
 void off_state_set_level(uint8_t level);
 
@@ -22,8 +19,6 @@ uint8_t off_state(Event event, uint16_t arg) {
     if (event == EV_enter_state) {
         // Turn off
         off_state_set_level(0);
-        // Reset channel mode
-        channel_mode = 0;
         // Update aux LEDs now to avoid waiting for sleep
         #ifdef USE_INDICATOR_LED
         indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
@@ -35,7 +30,11 @@ uint8_t off_state(Event event, uint16_t arg) {
         ticks_since_on = 0;
         // sleep while off  (lower power use)
         // (unless delay requested; give the ADC some time to catch up)
-        if (! arg) { go_to_standby = 1; }
+        if (! arg) { 
+            go_to_standby = 1; 
+            // Reset channel mode
+            channel_mode = 0;
+        }
         return EVENT_HANDLED;
     }
 
@@ -83,7 +82,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 1H -> Moonlight
     // (Stay off until hold timing complete, then come on at moonlight level)
     else if (event == EV_click1_hold) {
-        if (redMoon) {
+        if (cfg.channel_mode == 1) {
             channel_mode = 1;
             off_state_set_level(MAX_LEVEL);
         } else {

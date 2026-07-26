@@ -11,11 +11,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
         ramp_direction = 1;
         memorized_level = arg;
         // Use RED channel instead of Moonlight?
-        if (arg == LVLS[0] && redMoon) {
+        if (arg == LVLS[0] && cfg.channel_mode == 1) {
             channel_mode = 1;
             set_level_and_therm_target(MAX_LEVEL);
         } else {
-            channel_mode = 0;  
+            channel_mode = 0;
             set_level_and_therm_target(arg);
         }
         
@@ -32,7 +32,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
     if (memorized_level < LVLS[1]) {
 
         // 1H/2H (Moonlight) -> Change Brightness
-        if (((event == EV_click1_hold) || (event == EV_click2_hold)) && !redMoon) {
+        if (((event == EV_click1_hold) || (event == EV_click2_hold)) && cfg.channel_mode == 0) {
 
             // ramp slower
             if (arg % 2)
@@ -79,7 +79,9 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
         // 6C -> Red Moon Toggle
         else if (event == EV_6clicks) {
-            redMoon = !redMoon;
+            cfg.channel_mode = (cfg.channel_mode == 0) ? 1 : 0;
+            save_config();
+            set_level_and_therm_target(0);
             set_state(steady_state, LVLS[0]);
             return EVENT_HANDLED;
         }
