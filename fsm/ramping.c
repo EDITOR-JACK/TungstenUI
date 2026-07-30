@@ -45,19 +45,18 @@ inline void set_level_aux_leds(uint8_t level) {
 }
 #endif  // ifdef HAS_AUX_LEDS
 
-#ifdef USE_AUX_RGB_LEDS
+#ifdef USE_AUX_RGB_LEDS_WHILE_ON
 // TODO: maybe move this stuff into FSM
 #include "anduril/aux-leds.h"  // for rgb_led_voltage_readout()
 inline void set_level_aux_rgb_leds(uint8_t level) {
     if (! go_to_standby) {
-        uint8_t rgb_level = (cfg.aux_while_on & 0b10) ? level : 0;
         #ifdef USE_AUX_THRESHOLD_CONFIG
-        if (rgb_level > cfg.button_led_low_ramp_level) {
-            rgb_led_voltage_readout(rgb_level > cfg.button_led_high_ramp_level);
+        if (level > cfg.button_led_low_ramp_level) {
+            rgb_led_voltage_readout(level > cfg.button_led_high_ramp_level);
         }
         #else
-        if (rgb_level > 0) {
-            rgb_led_voltage_readout(rgb_level > (USE_AUX_RGB_LEDS_WHILE_ON + 0));
+        if (level > 0) {
+            rgb_led_voltage_readout(level > USE_AUX_RGB_LEDS_WHILE_ON);
         }
         #endif
         else {
@@ -66,18 +65,17 @@ inline void set_level_aux_rgb_leds(uint8_t level) {
         // some drivers can be wired with RGB or single color to button
         // ... so support both even though only one is connected
         #ifdef USE_BUTTON_LED
-            uint8_t button_level = (cfg.aux_while_on & 0b01) ? level : 0;
             #ifdef USE_AUX_THRESHOLD_CONFIG
             button_led_set(
-                    (button_level > cfg.button_led_low_ramp_level)
-                    << (button_level > cfg.button_led_high_ramp_level));
+                    (level > cfg.button_led_low_ramp_level)
+                    << (level > cfg.button_led_high_ramp_level));
             #else
-            button_led_set((button_level > 0) + (button_level > DEFAULT_LEVEL));
+            button_led_set((level > 0) + (level > DEFAULT_LEVEL));
             #endif
         #endif
     }
 }
-#endif  // ifdef USE_AUX_RGB_LEDS
+#endif  // ifdef USE_AUX_RGB_LEDS_WHILE_ON
 
 
 void set_level(uint8_t level) {
@@ -103,11 +101,10 @@ void set_level(uint8_t level) {
     #endif
 
     #ifdef HAS_AUX_LEDS
-    set_level_aux_leds((cfg.aux_while_on & 0b01) ? level : 0);
+    set_level_aux_leds(level);
     #endif
 
-    #ifdef USE_AUX_RGB_LEDS
-    //set_level_aux_rgb_leds((cfg.aux_while_on & 0b10) ? level : 0);
+    #ifdef USE_AUX_RGB_LEDS_WHILE_ON
     set_level_aux_rgb_leds(level);
     #endif
 
@@ -286,4 +283,3 @@ void gradual_tick() {
 
 
 #endif  // ifdef USE_RAMPING
-
