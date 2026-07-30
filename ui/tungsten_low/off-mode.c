@@ -73,12 +73,18 @@ uint8_t off_state(Event event, uint16_t arg) {
     //---------- OPERATIONS START ----------
 
     // 1C/1H -> Moonlight Ramp
-    else if (event == EV_click1_press) {
+    else if (event == EV_click1_release) {
         off_state_set_level(1);
         return EVENT_HANDLED;
     }
     else if (event == EV_1click || event == EV_click1_hold) {
         set_state(steady_state, 1);
+        return EVENT_HANDLED;
+    }
+
+    // 2C -> Turn off for future events
+    else if (event == EV_click2_press) {
+        set_level(0);
         return EVENT_HANDLED;
     }
 
@@ -91,7 +97,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 3H -> AUX toggle (LOW RED)
     // (Sets button LED only, or front AUX if no button LED)
-    else if (event == EV_click3_hold) {
+    else if (event == EV_click3_hold_release) {
         if (cfg.rgb_led_off_mode == 0x00) {
             //Set RGB AUX config to LOW (0x1_) and RED (0x_0)
             cfg.rgb_led_off_mode = 0x10;
@@ -100,7 +106,7 @@ uint8_t off_state(Event event, uint16_t arg) {
             cfg.rgb_led_off_mode = 0x00;
         }
         save_config();
-        set_state(off_state, 0);
+        //set_state(off_state, 0);
         return EVENT_HANDLED;
     }
 
