@@ -25,17 +25,17 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H/2H -> Change Brightness
-    if (((event == EV_click1_hold) || (event == EV_click2_hold)) && !redMoon) {
+    // 1H/2H -> Change Brightness (2C -> +1 level)
+    if (((event == EV_click1_hold) || (event == EV_click2_hold) || (event == EV_click2_release)) && !redMoon) {
 
         // ramp slower
-        if (arg % 2)
+        if (arg % 2 && arg != 0) {
             return EVENT_HANDLED;
 
         // set ramp direction on first frame
         if (!arg) {
-            if (event == EV_click1_hold) { ramp_direction = 1; }
-            else { ramp_direction = -1; }
+            if (event == EV_click2_hold) { ramp_direction = -1; }
+            else { ramp_direction = 1; }
         }
 
         memorized_level = nearest_level((int16_t)actual_level + ramp_direction);
