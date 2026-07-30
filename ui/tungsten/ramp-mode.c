@@ -52,7 +52,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         }
 
         // 2C -> Increment Brightness by 1 level
-        else if (event == EV_click2_release && cfg.channel_mode == 0) {
+        else if (event == EV_2clicks && cfg.channel_mode == 0) {
             memorized_level = nearest_level((int16_t)actual_level + 1);
             set_level_and_therm_target(memorized_level);
             return EVENT_HANDLED;
