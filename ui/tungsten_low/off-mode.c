@@ -55,18 +55,14 @@ uint8_t off_state(Event event, uint16_t arg) {
 
         // Voltage low, not critical (for Lithium only)
         if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 40)) {
-            // Blink AUX Red (or indicator LED) for 5 seconds
-            #ifdef USE_INDICATOR_LED
-            indicator_led_update(3, arg);
-            #elif defined(USE_AUX_RGB_LEDS)
+            // Blink AUX Red for 5 seconds
+            #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x30, arg);
             #endif
         } 
         else {
             // use configured AUX settings
-            #ifdef USE_INDICATOR_LED
-            indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
-            #elif defined(USE_AUX_RGB_LEDS)
+            #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(cfg.rgb_led_off_mode, arg);
             #endif
         }
@@ -78,7 +74,7 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 1C/1H -> Moonlight Ramp
     else if (event == EV_1click || event == EV_click1_hold) {
-        set_state(steady_state, LVLS[0]);
+        set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
 
@@ -90,6 +86,7 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
 
     // 3H -> AUX toggle (LOW RED)
+    // (Sets button LED only, or front AUX if no button LED)
     else if (event == EV_click3_hold) {
         if (cfg.rgb_led_off_mode == 0x00) {
             //Set RGB AUX config to LOW (0x1_) and RED (0x_0)
@@ -97,19 +94,6 @@ uint8_t off_state(Event event, uint16_t arg) {
         } else {
             //Set RGB AUX config to OFF (0x00)
             cfg.rgb_led_off_mode = 0x00;
-        }
-        save_config();
-        return EVENT_HANDLED;
-    }
-
-    // 4C -> Indicator LED toggle
-    else if (event == EV_click4_press) {
-        if (cfg.indicator_led_mode == 0) {
-            //Set Indicator LED config to LOW
-            cfg.indicator_led_mode = 1;
-        } else {
-            //Set Indicator LED config to OFF
-            cfg.indicator_led_mode = 0;
         }
         save_config();
         return EVENT_HANDLED;

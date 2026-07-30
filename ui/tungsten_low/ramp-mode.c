@@ -150,8 +150,8 @@ uint8_t nearest_level(int16_t target) {
     ramp_update_config();
 
     // bounds check
-    uint8_t mode_min = LVLS[0];
-    uint8_t mode_max = LVLS[1]-1;
+    uint8_t mode_min = 1;
+    uint8_t mode_max = MAX_LEVEL;
 
     if (target < mode_min) return mode_min;
     if (target > mode_max) return mode_max;
