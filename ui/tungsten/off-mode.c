@@ -29,7 +29,9 @@ uint8_t off_state(Event event, uint16_t arg) {
         redMoon = false;
         
         // don't go to sleep while animating
+        #ifdef USE_SMOOTH_STEPS
         arg |= smooth_steps_in_progress;
+        #endif
         if (! arg) { 
             // Sleep
             go_to_standby = 1; 
