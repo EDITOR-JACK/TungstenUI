@@ -41,3 +41,6 @@
 #undef RGB_LED_OFF_DEFAULT
 #define RGB_LED_OFF_DEFAULT     0x00
 #endif
+
+// Preset levels for Moonlight, Low, High
+uint8_t LVLS[3] = { 5, 40, 90};

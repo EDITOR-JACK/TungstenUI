@@ -62,4 +62,5 @@
 //#undef USE_BUTTON_LED
 //#endif
 
-
+// Preset levels for Moonlight, Low, High
+uint8_t LVLS[3] = { 2, 50, 100};

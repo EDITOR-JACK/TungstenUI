@@ -116,3 +116,5 @@
 // added for convenience
 #define USE_SOFT_FACTORY_RESET
 
+// Preset levels for Moonlight, Low, High
+uint8_t LVLS[3] = { 5, 40, 90};
