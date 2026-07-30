@@ -51,8 +51,25 @@ uint8_t steady_state(Event event, uint16_t arg) {
             return EVENT_HANDLED;
         }
 
-        // 3C -> AUX toggle (LOW RED)
+        // 2C -> Increment Brightness by 1 level
+        else if (event == EV_click2_release && cfg.channel_mode == 0) {
+            memorized_level = nearest_level((int16_t)actual_level + 1);
+            set_level_and_therm_target(memorized_level);
+            return EVENT_HANDLED;
+        }
+
+        // 3C -> Red Moon Toggle
         else if (event == EV_3clicks) {
+            cfg.channel_mode = (cfg.channel_mode == 0) ? 1 : 0;
+            save_config();
+            redMoon = cfg.channel_mode;
+            set_level(0);
+            set_state(steady_state, LVLS[0]);
+            return EVENT_HANDLED;
+        }
+
+        // 3H -> AUX toggle (LOW RED)
+        else if (event == EV_click3_hold) {
             if (cfg.rgb_led_off_mode == 0x00) {
                 //Set RGB AUX config to LOW (0x1_) and RED (0x_0)
                 cfg.rgb_led_off_mode = 0x10;
@@ -74,16 +91,6 @@ uint8_t steady_state(Event event, uint16_t arg) {
         // 5C -> Temperature Readout
         else if (event == EV_5clicks) {
             set_state(tempcheck_state, 0);
-            return EVENT_HANDLED;
-        }
-
-        // 6C -> Red Moon Toggle
-        else if (event == EV_6clicks) {
-            cfg.channel_mode = (cfg.channel_mode == 0) ? 1 : 0;
-            save_config();
-            redMoon = cfg.channel_mode;
-            set_level(0);
-            set_state(steady_state, LVLS[0]);
             return EVENT_HANDLED;
         }
     }

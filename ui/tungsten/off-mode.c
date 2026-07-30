@@ -58,10 +58,8 @@ uint8_t off_state(Event event, uint16_t arg) {
 
         // Voltage low, not critical (for Lithium only)
         if ((voltage <= VOLTAGE_RED) && (voltage > VOLTAGE_LOW) && (arg <= 40)) {
-            // Blink AUX Red (or indicator LED) for 5 seconds
-            #ifdef USE_INDICATOR_LED
-            indicator_led_update(3, arg);
-            #elif defined(USE_AUX_RGB_LEDS)
+            // Blink AUX Red for 5 seconds
+            #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(0x30, arg);
             #endif
         } 
@@ -73,9 +71,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         } */
         else {
             // use configured AUX settings
-            #ifdef USE_INDICATOR_LED
-            indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
-            #elif defined(USE_AUX_RGB_LEDS)
+            #if defined(USE_AUX_RGB_LEDS)
             rgb_led_update(cfg.rgb_led_off_mode, arg);
             #endif
         }
