@@ -43,7 +43,11 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // go back to sleep eventually if we got bumped but didn't leave "off" state
     else if (event == EV_tick) {
-        if (arg > HOLD_TIMEOUT && (! smooth_steps_in_progress)) {
+        if (arg > HOLD_TIMEOUT
+            #ifdef USE_SMOOTH_STEPS 
+            && (! smooth_steps_in_progress)
+            #endif
+        ) {
             go_to_standby = 1;
         }
         return EVENT_HANDLED;
@@ -120,8 +124,10 @@ uint8_t off_state(Event event, uint16_t arg) {
     // 2C -> HIGH
     // (start transition to HIGH level immediately on second click)
     else if (event == EV_click2_press) {
+        #ifdef USE_SMOOTH_STEPS
         // immediately cancel any animations in progress
         smooth_steps_in_progress = 0;
+        #endif
         off_state_set_level(LVLS[2]);
         return EVENT_HANDLED;
     }
@@ -136,8 +142,10 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 2H -> TURBO
     else if (event == EV_click2_hold) {
+        #ifdef USE_SMOOTH_STEPS
         // immediately cancel any animations in progress
         smooth_steps_in_progress = 0;
+        #endif
         set_state(steady_state, MAX_LEVEL);
         return EVENT_HANDLED;
     }
