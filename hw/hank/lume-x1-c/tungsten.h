@@ -36,8 +36,8 @@
 #undef USE_EXTRA_BATTCHECK_DIGIT
 #endif
 
-// blink numbers on the green aux channel
-#define DEFAULT_BLINK_CHANNEL  CM_AUXGRN
-
 // default aux LED config: off
+#ifdef RGB_LED_OFF_DEFAULT
+#undef RGB_LED_OFF_DEFAULT
 #define RGB_LED_OFF_DEFAULT     0x00
+#endif
