@@ -25,11 +25,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H/2H -> Change Brightness (2C -> +1 level)
-    if (((event == EV_click1_hold) || (event == EV_click2_hold) || (event == EV_click2_release)) && !redMoon) {
+    // 1H/2H -> Ramp Brightness
+    if (((event == EV_click1_hold) || (event == EV_click2_hold)) && !redMoon) {
 
         // ramp slower
-        if (arg % 2 && arg != 0) {
+        if (arg % 2) {
             return EVENT_HANDLED;
         }
         // set ramp direction on first frame
@@ -42,6 +42,13 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
         set_level_and_therm_target(memorized_level);
 
+        return EVENT_HANDLED;
+    }
+
+    // 2C -> Increment Brightness by 1 level
+    else if (event == EV_click2_release  && !redMoon) {
+        memorized_level = nearest_level((int16_t)actual_level + 1);
+        set_level_and_therm_target(memorized_level);
         return EVENT_HANDLED;
     }
 
