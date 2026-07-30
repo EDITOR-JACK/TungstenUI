@@ -18,13 +18,14 @@ uint8_t off_state(Event event, uint16_t arg) {
         if (redMoon) {
            // Turn off immediately 
            set_level(0);
+           // Reset channel mode
+           channel_mode = 0;
         } else {
             // Turn off smoothly
             off_state_set_level(0);
         }
-
         redMoon = false;
-        
+
         // don't go to sleep while animating
         #ifdef USE_SMOOTH_STEPS
         arg |= smooth_steps_in_progress;
@@ -32,8 +33,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         if (! arg) { 
             // Sleep
             go_to_standby = 1; 
-            // Reset channel mode
-            channel_mode = 0;
+            
         }
         return EVENT_HANDLED;
     }
@@ -73,6 +73,10 @@ uint8_t off_state(Event event, uint16_t arg) {
     //---------- OPERATIONS START ----------
 
     // 1C/1H -> Moonlight Ramp
+    else if (event == EV_click1_press) {
+        off_state_set_level(1);
+        return EVENT_HANDLED;
+    }
     else if (event == EV_1click || event == EV_click1_hold) {
         set_state(steady_state, 1);
         return EVENT_HANDLED;
@@ -96,6 +100,7 @@ uint8_t off_state(Event event, uint16_t arg) {
             cfg.rgb_led_off_mode = 0x00;
         }
         save_config();
+        set_state(off_state, 0);
         return EVENT_HANDLED;
     }
 

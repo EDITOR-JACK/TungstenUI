@@ -25,7 +25,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
-    // 1H/2H (Moonlight) -> Change Brightness
+    // 1H/2H -> Change Brightness
     if (((event == EV_click1_hold) || (event == EV_click2_hold)) && !redMoon) {
 
         // ramp slower
@@ -42,6 +42,11 @@ uint8_t steady_state(Event event, uint16_t arg) {
 
         set_level_and_therm_target(memorized_level);
 
+        return EVENT_HANDLED;
+    }
+
+    // 3C -> Just handle it here to prevent channel switching
+    else if (event == EV_3clicks) {
         return EVENT_HANDLED;
     }
 
