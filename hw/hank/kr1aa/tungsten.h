@@ -62,5 +62,14 @@
 //#undef USE_BUTTON_LED
 //#endif
 
+#ifdef USE_EXTRA_BATTCHECK_DIGIT
+#undef USE_EXTRA_BATTCHECK_DIGIT
+#endif
+
+//Smooth steps seem to be a bit funny on this driver at low modes.
+#ifdef USE_SMOOTH_STEPS
+#undef USE_SMOOTH_STEPS
+#endif
+
 // Preset levels for Moonlight, Low, High
-uint8_t LVLS[3] = { 2, 50, 100};
+uint8_t LVLS[3] = { 1, 40, 100};
