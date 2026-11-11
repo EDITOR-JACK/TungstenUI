@@ -74,11 +74,11 @@ uint8_t off_state(Event event, uint16_t arg) {
 
     // 1C/1H -> Moonlight Ramp
     else if (event == EV_click1_release) {
-        set_level(1);
+        set_level(5);
         return EVENT_HANDLED;
     }
     else if (event == EV_1click || event == EV_click1_hold) {
-        set_state(steady_state, 1);
+        set_state(steady_state, 5);
         return EVENT_HANDLED;
     }
 

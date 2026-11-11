@@ -10,7 +10,7 @@ uint8_t steady_state(Event event, uint16_t arg) {
         memorized_level = arg;
         // Use RED channel instead of Moonlight?
         if (redMoon) {
-            channel_mode = 1;
+            channel_mode = 3;
         } else {
             channel_mode = 0;
         }
